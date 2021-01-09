@@ -1,4 +1,3 @@
-
 // import {
 //   View,
 //   Text,
@@ -243,7 +242,7 @@
 //      avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
 //   },
 
-// ] 
+// ]
 // // import React from "react";
 // // import {
 // //   StyleSheet,
@@ -266,9 +265,9 @@
 // // class Wdriver extends React.Component {
 // //   render() {
 // //     return (
-     
+
 // //       <Block flex style={styles.profile}>
-        
+
 // //         <Block flex >
 // //           <ImageBackground
 // //             source={Images.ProfileBackground}
@@ -281,7 +280,7 @@
 // //                white
 // //                title="Profile"
 // //                navigation={this.props.navigation}
-             
+
 // //             />
 // //           </Block>
 // //             <ScrollView
@@ -292,14 +291,13 @@
 // //              <Text style={{textAlign: 'right', alignSelf: 'flex-end'}}>
 // //       The idea with React Native Elements is more about component structure than actual design.
 // //   </Text>
-            
 
 // //   <Button
 // //     icon={<Icon name='code' color='#ffffff' />}
 // //     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
 // //     title='VIEW NOW' />
 // // </Card>
-// // {/* <Block width={width * 0.8} style={{ marginBottom: 15 }} 
+// // {/* <Block width={width * 0.8} style={{ marginBottom: 15 }}
 // //                     row
 // //                     space="evenly">
 // //                       <Card>
@@ -307,7 +305,7 @@
 // //                         <Text
 // //                           color="#32325D"
 // //                           size={16}
-                          
+
 // //                         >
 // //                           Select Vehicle Type
 // //                         </Text>
@@ -321,7 +319,7 @@
 // //             </ScrollView>
 // //           </ImageBackground>
 // //         </Block>
-       
+
 // //       </Block>
 // //     );
 // //   }
@@ -474,7 +472,6 @@
 //     ]
 //   }
 
-
 //   render(){
 //     return (
 //       <View style={styles.container}>
@@ -506,7 +503,7 @@
 //     borderRadius:5
 //   }
 // });
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -514,150 +511,65 @@ import {
   Image,
   ImageBackground,
   Platform,
-  
-  View, 
-  FlatList, 
-   TouchableOpacity
-} from "react-native";
-import { Block, Text, theme } from "galio-framework";
-import { Button, Select,  Input, Header, Switch } from '../components/';
+  View,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
+import { Block, Text, theme } from 'galio-framework';
+import { Button, Select, Input, Header, Switch } from '../components/';
 //import { Button } from "../components";
-import { Images, argonTheme } from "../constants";
-import { HeaderHeight } from "../constants/utils";
+import { Images, argonTheme } from '../constants';
+import { HeaderHeight } from '../constants/utils';
 import { Card, Rating } from 'react-native-elements';
-const { width, height } = Dimensions.get("screen");
+const { width, height } = Dimensions.get('screen');
 import { useNavigation } from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
 const thumbMeasure = (width - 48 - 32) / 3;
 function Item({ item }) {
   const navigation = useNavigation();
   return (
-   
-      <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('CarDetails',{item})}>
-     
-     <Image source={{uri:item.image}}  style={{width:150, height:100,borderRadius:1}} />
-      <View style={{alignItems:"center",flex:1,marginLeft:20}}>
-        <Text style={{fontWeight:"bold",marginTop:10}}>{item.name}</Text>
+    <TouchableOpacity
+      style={styles.listItem}
+      onPress={() => navigation.navigate('CarDetails', { item })}
+    >
+      <Image
+        source={{ uri: item.image }}
+        style={{ width: 150, height: 100, borderRadius: 1 }}
+      />
+      <View style={{ alignItems: 'center', flex: 1, marginLeft: 20 }}>
+        <Text style={{ fontWeight: 'bold', marginTop: 10 }}>{item.name}</Text>
         <Rating
-              type='star'
-              imageSize={15}
-              readonly
-              style={{ paddingRight: 10, marginTop:7 }}
-              startingValue={item.rating}
-            />
-            <Text style={{color:"green", marginTop:7}}>{item.fare} Rs.per day</Text>
+          type='star'
+          imageSize={15}
+          readonly
+          style={{ paddingRight: 10, marginTop: 7 }}
+          startingValue={item.rating}
+        />
+        <Text style={{ color: 'green', marginTop: 7 }}>
+          {item.fare} Rs.per day
+        </Text>
       </View>
-      <View style={{alignItems:"center",marginTop:30, flex:1}}>
-      <Icon
-              name='shield'
-              size={36}
-              type='font-awesome'
-              color='green'
-              //onPress={() => navigation.toggleDrawer()}
-            />
+      <View style={{ alignItems: 'center', marginTop: 30, flex: 1 }}>
+        <Icon
+          name='shield'
+          size={36}
+          type='font-awesome'
+          color='green'
+          //onPress={() => navigation.toggleDrawer()}
+        />
       </View>
       {/* <TouchableOpacity style={{height:50,width:50, justifyContent:"center",alignItems:"center"}}>
         <Text size={13} style={{color:"#3944BC",marginTop:80}}>Details...</Text>
       </TouchableOpacity> */}
     </TouchableOpacity>
-     
-    
   );
 }
 class Wdriver extends React.Component {
-
-  state = {
-    data:[
-        {
-            "name": "Toyota",
-            "price": "$23",
-            "rating": "3",
-            "photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQS3gLAMkW3_Q8vTh-JkXBW0Q14OsfMS29Bqw&usqp=CAU"
-        },
-        {
-            "name": "Honda",
-            "price": "$23",
-            "rating": "3",
-            "photo": "https://i.pinimg.com/originals/3c/01/89/3c01897db89b6e406128b4fa03303137.png"
-        },
-        {
-            "name": "BMW",
-            "price": "$23",
-            "rating": "3",
-            "photo": "https://lh3.googleusercontent.com/proxy/GD4ns-wNUuiz94s3cYOeA9XE_hmsLNtMK3Vrjvsic9Al-sgRZ_Beqy1JG48aG3slwAh45B6SpftfCn2gmK4k3l6CS809AdCqsA"
-        },
-        {
-            "name": "Renee Sims",
-            "price": "$23",
-            "rating": "3",
-            "photo": "https://lh3.googleusercontent.com/proxy/Znb8RQBARN0JDWtCp7uVvZrY5tHwXrMApOs75ftrZyHzyXqCLFz7EgI1unyR1P12PkD7e3jzMLsCkNwAYiBdYwg5XfD5EFjaIaifZogDrdCjjYmjK70kX9RqqFpR"
-        },
-        {
-          "name": "Toyata",
-          "price": "$23",
-          "rating": "3",
-          "photo": "https://i.pinimg.com/originals/6d/16/ab/6d16abc949cc76afd3c8782079b8bc62.png"
-        },
-        {
-          "name": "Toyata",
-          "price": "$23",
-          "rating": "3",
-          "photo": "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80"
-        },
-        {
-          "name": "Toyata",
-          "price": "$23",
-          "rating": "3",
-          "photo": "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80"
-        },
-        {
-          "name": "Toyata",
-          "price": "$23",
-          "rating": "3",
-          "photo": "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80"
-        }
-        ,
-        {
-          "name": "Toyata",
-          "price": "$23",
-          "rating": "3",
-          "photo": "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80"
-        },
-        {
-          "name": "Toyata",
-          "price": "$23",
-          "rating": "3",
-          "photo": "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80"
-        }
-        ,
-        {
-          "name": "Toyata",
-          "price": "$23",
-          "rating": "3",
-          "photo": "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80"
-        }
-        ,
-        {
-          "name": "Toyata",
-          "price": "$23",
-          "rating": "3",
-          "photo": "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80"
-        }
-        ,
-        {
-          "name": "Toyata",
-          "price": "$23",
-          "rating": "3",
-          "photo": "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80"
-        }
-        ,
-      ]     
-  }
-  render(){
+  render() {
     const data = this.props.route.params.data;
 
     console.log(data);
-   
+
     return (
       // <View style={styles.container}>
       //   <FlatList
@@ -668,44 +580,41 @@ class Wdriver extends React.Component {
       //   />
       // </View>
       <Block flex style={styles.profile}>
-        
-      <Block flex >
-        <ImageBackground
-          source={Images.ProfileBackground}
-          style={styles.profileContainer}
-          imageStyle={styles.profileBackground}
-        >
+        <Block flex>
+          <ImageBackground
+            source={Images.ProfileBackground}
+            style={styles.profileContainer}
+            imageStyle={styles.profileBackground}
+          >
             <Block style={{ marginBottom: theme.SIZES.BASE }}>
-          <Header
-          back
-             transparent
-             white
-             title="Available Cars"
-             navigation={this.props.navigation}
-           
-          />
-        </Block>
-        <Block left style={styles.nameInfo}>
-                    {/* <Text bold size={28} color="white">
+              <Header
+                back
+                transparent
+                white
+                title='Available Cars'
+                navigation={this.props.navigation}
+              />
+            </Block>
+            <Block left style={styles.nameInfo}>
+              {/* <Text bold size={28} color="white">
                       Jessica Jones, 27
                     </Text> */}
-                    <Text bold size={16} color="white" style={{  marginLeft:10 }}>
-                    Vehicles Matching Your Search
-                    </Text>
-                  </Block>
-           {/* <Block flex style={styles.profileCard}> */}
-          
-         <FlatList
-          style={{flex:1}}
-          data={data}
-          renderItem={({ item }) => <Item item={item}/>}
-          keyExtractor={item => item.id}
-        />
-     
-         {/*   </Block> */}
-          
-        </ImageBackground>
-      </Block>
+              <Text bold size={16} color='white' style={{ marginLeft: 10 }}>
+                Vehicles Matching Your Search
+              </Text>
+            </Block>
+            {/* <Block flex style={styles.profileCard}> */}
+
+            <FlatList
+              style={{ flex: 1 }}
+              data={data}
+              renderItem={({ item }) => <Item item={item} />}
+              keyExtractor={(item) => item._id}
+            />
+
+            {/*   </Block> */}
+          </ImageBackground>
+        </Block>
       </Block>
     );
   }
@@ -713,92 +622,91 @@ class Wdriver extends React.Component {
 
 const styles = StyleSheet.create({
   profile: {
-    marginTop: Platform.OS === "android" ? -HeaderHeight :0,
-  // marginBottom: -HeaderHeight * 2,
-    flex: 1
+    marginTop: Platform.OS === 'android' ? -HeaderHeight : 0,
+    // marginBottom: -HeaderHeight * 2,
+    flex: 1,
   },
   container: {
     flex: 1,
     backgroundColor: '#F7F7F7',
-    marginTop:60
+    marginTop: 60,
   },
-  listItem:{
-    margin:9,
-  
-    backgroundColor:"#FFF",
-    width:"90%",
-    flex:1,
-    alignSelf:"center",
-    flexDirection:"row",
-    borderRadius:1,
-    height:100,
-    shadowColor: "#000",
-shadowOffset: {
-	width: 0,
-	height: 2,
-},
-shadowOpacity: 0.25,
-shadowRadius: 3.84,
+  listItem: {
+    margin: 9,
 
-elevation: 5,
+    backgroundColor: '#FFF',
+    width: '90%',
+    flex: 1,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    borderRadius: 1,
+    height: 100,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
   profileContainer: {
     width: width,
     height: height,
     padding: 0,
     zIndex: 1,
-  //  marginTop:100,
+    //  marginTop:100,
   },
   profileBackground: {
     width: width,
     height: height / 2,
-    
   },
   profileCard: {
     // position: "relative",
     padding: theme.SIZES.BASE,
     marginHorizontal: theme.SIZES.BASE,
-   // marginTop: 100,
+    // marginTop: 100,
     borderTopLeftRadius: 6,
     borderTopRightRadius: 6,
-  //  backgroundColor: theme.COLORS.WHITE,
-    shadowColor: "black",
+    //  backgroundColor: theme.COLORS.WHITE,
+    shadowColor: 'black',
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
     flex: 1,
     backgroundColor: '#F7F7F7',
-    marginTop:50
+    marginTop: 50,
   },
   info: {
-    paddingHorizontal: 40
+    paddingHorizontal: 40,
   },
   avatarContainer: {
-    position: "relative",
-    marginTop: -80
+    position: 'relative',
+    marginTop: -80,
   },
   avatar: {
     width: 124,
     height: 124,
     borderRadius: 62,
-    borderWidth: 0
+    borderWidth: 0,
   },
   nameInfo: {
-    marginTop: 15
+    marginTop: 15,
   },
   divider: {
-    width: "90%",
+    width: '90%',
     borderWidth: 1,
-    borderColor: "#E9ECEF"
+    borderColor: '#E9ECEF',
   },
   thumb: {
     borderRadius: 4,
     marginVertical: 4,
-    alignSelf: "center",
+    alignSelf: 'center',
     width: thumbMeasure,
-    height: thumbMeasure
-  }
+    height: thumbMeasure,
+  },
 });
 
 export default Wdriver;

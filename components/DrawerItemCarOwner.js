@@ -13,67 +13,58 @@ class DrawerItemCarOwner extends React.Component {
       case 'Home':
         return (
           <Icon
-          name='user' 
-          type='font-awesome'
-            size={14}
+            name='home'
+            type='font-awesome'
+            size={20}
             color={focused ? 'white' : argonTheme.COLORS.PRIMARY}
           />
         );
       case 'sign Out':
         return (
           <Icon
-          name='user' 
-          type='font-awesome'
-            size={14}
+            name='sign-out'
+            type='font-awesome'
+            size={20}
             color={focused ? 'white' : argonTheme.COLORS.PRIMARY}
           />
         );
       case 'My Bookings':
         return (
           <Icon
-          name='user' 
-          type='font-awesome'
-            size={14}
+            name='book'
+            type='font-awesome'
+            size={18}
             color={focused ? 'white' : argonTheme.COLORS.ERROR}
           />
         );
-      case 'Contact Us':
+      case 'Current Booking':
         return (
           <Icon
-          name='user' 
-          type='font-awesome'
-            size={14}
+            name='bookmark-check'
+            type='material-community'
+            size={23}
             color={focused ? 'white' : argonTheme.COLORS.PRIMARY}
           />
         );
       case 'Profile':
         return (
           <Icon
-          name='user' 
-          type='font-awesome'
-            size={14}
+            name='account'
+            type='material-community'
+            size={20}
             color={focused ? 'white' : argonTheme.COLORS.WARNING}
           />
         );
-      case 'option':
+      case 'Request':
         return (
           <Icon
-          name='user' 
-          type='font-awesome'
-            size={14}
+            name='bookmark-outline'
+            type='material-community'
+            size={20}
             color={focused ? 'white' : argonTheme.COLORS.INFO}
           />
         );
-      case 'Logout':
-        return (
-          <Icon
-          name='user' 
-          type='font-awesome'
-            size={14}
-            color={focused ? 'white' : 'rgba(0,0,0,0.5)'}
-          />
-        );
-     
+
       default:
         return null;
     }

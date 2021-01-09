@@ -7,7 +7,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Image,
-  SafeAreaView
+  Picker,
+  SafeAreaView,
 } from 'react-native';
 import { Block, Checkbox, Text, theme } from 'galio-framework';
 import { TouchableOpacity } from 'react-native';
@@ -23,11 +24,11 @@ import Feather from 'react-native-vector-icons/Feather';
 import { View } from 'native-base';
 import PhoneInput from 'react-native-phone-input';
 import * as ImageManipulator from 'expo-image-manipulator';
-import PassMeter from "react-native-passmeter";
+import PassMeter from 'react-native-passmeter';
 const MAX_LEN = 15,
   MIN_LEN = 6,
-  PASS_LABELS = ["Too Short", "Weak", "Normal", "Strong", "Secure"];
-const baseUrl = 'http://192.168.1.141:5000';
+  PASS_LABELS = ['Too Short', 'Weak', 'Normal', 'Strong', 'Secure'];
+import { baseUrl } from '../baseUrl/baseUrl';
 class CarOwner extends React.Component {
   constructor(props) {
     super(props);
@@ -38,8 +39,8 @@ class CarOwner extends React.Component {
       password: '',
       confirmPass: '0000000',
       address: 'Unknown',
-      city:'karachi',
-      passwordSet:"",
+      city: 'Islamabad',
+      passwordSet: '',
       //--------
       secureTextEntry: true,
       iconName: 'eye-off',
@@ -47,24 +48,25 @@ class CarOwner extends React.Component {
       nameError: '',
       emailError: '',
       numberError: '',
-      passError:'',
-      cpassError:'',
-      addressError:'',
+      passError: '',
+      cpassError: '',
+      addressError: '',
+      selectedValueType: 'Car Owner',
       //-------------
       check_textInputChange: false,
-      email_check:false,
-      num_check:false,
-      pass_chk:false,
-      cPass_chk:false,
-      address_chk:false,
+      email_check: false,
+      num_check: false,
+      pass_chk: false,
+      cPass_chk: false,
+      address_chk: false,
       //--------------------
-      isValidEmail:true,
+      isValidEmail: true,
       isValidUser: true,
       isValidPassword: true,
-      isValid:true,
-      isValidPass:true,
-      isValidCPass:true,
-      isValidAddress:true,
+      isValid: true,
+      isValidPass: true,
+      isValidCPass: true,
+      isValidAddress: true,
       //---------
     };
   }
@@ -90,18 +92,16 @@ class CarOwner extends React.Component {
       cameraPermission.status === 'granted' &&
       cameraRollPermission.status === 'granted'
     ) {
-      
-        // Display the camera to the user and wait for them to take a photo or to cancel
-        // the action
-        let result = await ImagePicker.launchCameraAsync({
-          allowsEditing: true,
-          aspect: [4, 3],
-        });
-      
-        if (!result.cancelled) {
-          this.processImage(result.uri);
-        }
-        
+      // Display the camera to the user and wait for them to take a photo or to cancel
+      // the action
+      let result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+
+      if (!result.cancelled) {
+        this.processImage(result.uri);
+      }
     }
   };
   processImage = async (imageUri) => {
@@ -113,49 +113,64 @@ class CarOwner extends React.Component {
     console.log(processedImage);
     let localUri = processedImage.uri;
     let filename = localUri.split('/').pop();
-  
+
     // Infer the type of the image
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
-    this.setState({ imageUrl: processedImage.uri })
+    this.setState({ imageUrl: processedImage.uri });
     // Upload the image using the fetch and FormData APIs
-    let img={
-      uri: localUri, 
-      name: filename, 
-      type
-    }
+    let img = {
+      uri: localUri,
+      name: filename,
+      type,
+    };
     this.setState({ imgserver: img });
-    
-    
   };
   handleRegister() {
     console.log('yahan a raha');
-
-    
+    const type = this.state.selectedValueType;
     let formData = new FormData();
     // Assume "photo" is the name of the form field the server expects
     // formData.append('image', { uri: localUri, name: filename, type });
     formData.append('image', this.state.imgserver);
-    formData.append('name',this.state.name);
-    formData.append('email',this.state.email);
-    formData.append('password',this.state.password)
-    formData.append('cellPhone',this.state.number);
-    formData.append('address',this.state.address);
-    formData.append('city',this.state.city);
-     fetch('http://192.168.1.153:5000/api/owner/register', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-    });
+    formData.append('name', this.state.name);
+    formData.append('email', this.state.email);
+    formData.append('password', this.state.password);
+    formData.append('cellPhone', this.state.number);
+    formData.append('address', this.state.address);
+    formData.append('city', this.state.city);
+    if (type == 'Car Owner') {
+      fetch(baseUrl + 'api/owner/register', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+    } else if (type == 'Driver') {
+      fetch(baseUrl + 'api/driver/register', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+    } else if (type == 'Tourist Guide') {
+      fetch(baseUrl + 'api/tourist/register', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+    }
   }
   emailValidator() {
     if (this.state.email == '') {
-      this.email_check=false;
+      this.email_check = false;
       this.setState({ emailError: 'Email field cannot be empty!' });
     } else {
-      this.email_check=true;
+      this.email_check = true;
       this.setState({ emailError: '' });
     }
   }
@@ -170,15 +185,12 @@ class CarOwner extends React.Component {
       this.setState({
         isValidUser: false,
       });
-     
-    }
-    else if(value == ''){
+    } else if (value == '') {
       this.check_textInputChange = false;
       this.setState({ nameError: 'Name field cannot be empty!' });
-    }
-     else {
+    } else {
       this.check_textInputChange = true;
-      
+
       this.setState({
         isValidUser: true,
       });
@@ -201,35 +213,29 @@ class CarOwner extends React.Component {
       });
     }
     console.log('che k ');
-    
   }
   validate = (text) => {
     console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(text) === false) {
       this.setState({
-        isValidEmail: false
+        isValidEmail: false,
       });
-      this.setState({ email_check: false })
-      console.log("Email is Not Correct");
-      this.setState({ emailError: "Email is Not Correct" })
-      this.setState({ email: text })
-     
-  
-    }
-    else if(this.state.email == ''){
-      
-      this.setState({ email_check: false })
-      this.setState({ isValidEmail: false })
+      this.setState({ email_check: false });
+      console.log('Email is Not Correct');
+      this.setState({ emailError: 'Email is Not Correct' });
+      this.setState({ email: text });
+    } else if (this.state.email == '') {
+      this.setState({ email_check: false });
+      this.setState({ isValidEmail: false });
       this.setState({ emailError: 'Email field cannot be empty!' });
+    } else {
+      this.email_check = true;
+      this.setState({ isValidEmail: true });
+      this.setState({ email: text });
+      console.log('Email is Correct');
     }
-    else {
-      this.email_check=true;
-      this.setState({ isValidEmail: true })
-      this.setState({ email: text })
-      console.log("Email is Correct");
-    }
-  }
+  };
   onIconPress = () => {
     let iconName = this.state.secureTextEntry ? 'eye' : 'eye-off';
 
@@ -238,102 +244,94 @@ class CarOwner extends React.Component {
       iconName: iconName,
     });
   };
-  validateNumber=(value)=>{
+  validateNumber = (value) => {
     if (value !== '') {
       this.setState({ num_check: true });
-      this.setState({ number: value});
+      this.setState({ number: value });
       // var pattern = new RegExp(/^[0-9\b]+$/);
-    
+
       // if (!pattern.test(value)) {
-    
+
       //   this.isValid = false;
       //   this.setState({ numberError: 'Please enter only number!' });
-       
-    
+
       // }else if(value.length != 11){
-    
+
       //   this.isValid = false;
       //   this.setState({ numberError: 'Please enter valid phone number!' })
-        
-    
+
       // }
-    }
-    else{
+    } else {
       this.setState({ num_check: false });
       this.setState({ isValid: false });
-      this.setState({ passError: 'Please enter your phone number!' });    }
-  }
-  validatePass=(value)=>{
-    if (value !== '') {
-      this.setState({password:value});
-      this.setState({ pass_chk: true });
+      this.setState({ passError: 'Please enter your phone number!' });
     }
-    else{
+  };
+  validatePass = (value) => {
+    if (value !== '') {
+      this.setState({ password: value });
+      this.setState({ pass_chk: true });
+    } else {
       this.setState({ pass_check: false });
       this.setState({ isValidPass: false });
-      this.setState({ passError: 'Please enter your Password!' });    }
-  }
-  validateAddress=(value)=>{
+      this.setState({ passError: 'Please enter your Password!' });
+    }
+  };
+  validateAddress = (value) => {
     if (value !== '') {
-      this.setState({address:value});
+      this.setState({ address: value });
       this.setState({ address_chk: true });
       this.setState({ isValidAddress: true });
-    }
-    else{
+    } else {
       this.setState({ address_chk: false });
       this.setState({ isValidAddress: false });
-      this.setState({addressError: 'Please enter your Address!' });    }
-  }
-  validateCPass=(value)=>{
-    if (value !== '') {
-            if(value!==this.state.password)
-            {
-              this.setState({ cPass_check: false });
-              this.setState({ isValidCPass: false });
-              this.setState({ cpassError: 'Password does not match' });  
-            }
-            else{
-              this.setState({confirmPass:value});
-              this.setState({ cPass_chk: true });
-              this.setState({ cpassError: '' }); 
-              this.setState({ isValidCPass: true }); 
-            }
-     
+      this.setState({ addressError: 'Please enter your Address!' });
     }
-    else{
+  };
+  validateCPass = (value) => {
+    if (value !== '') {
+      if (value !== this.state.password) {
+        this.setState({ cPass_check: false });
+        this.setState({ isValidCPass: false });
+        this.setState({ cpassError: 'Password does not match' });
+      } else {
+        this.setState({ confirmPass: value });
+        this.setState({ cPass_chk: true });
+        this.setState({ cpassError: '' });
+        this.setState({ isValidCPass: true });
+      }
+    } else {
       this.setState({ cPass_check: false });
       this.setState({ isValidCPass: false });
-      this.setState({ cpassError: 'Please enter your Password!' });    }
-  }
-  passwordStrength=(value)=>{
-    
-    const test2= new RegExp(/^(?=.*[A-Z]).{3}$/);
-    const test3 = new RegExp(/^(?=.*[A-Z])(?=.*[!@#$&*]).{3}$/);
-    const test4= new RegExp(/^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).{3}$/);
-    const test5= new RegExp(/^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8}$/)
-    
-    if (value !== '') {
-      if(test5.test(value)){
-        this.setState({ password: value });
-        this.setState({ passError: "Strong" });
-      }
-      else if(test4.test(value)){
-        this.setState({ password: value });
-        this.setState({ passError: "Normal" });
-      }
-      else if(test3.test(value)){
-        this.setState({ password: value });
-        this.setState({ passError: "Weak" });
-      }
-      else if(test2.test(value)){
-        this.setState({ password: value });
-        this.setState({ passError: "Too Short" });
-      }
-      
+      this.setState({ cpassError: 'Please enter your Password!' });
     }
-    else{
-      this.setState({ passError: 'Please enter your password!' });    }
-  }
+  };
+  passwordStrength = (value) => {
+    const test2 = new RegExp(/^(?=.*[A-Z]).{3}$/);
+    const test3 = new RegExp(/^(?=.*[A-Z])(?=.*[!@#$&*]).{3}$/);
+    const test4 = new RegExp(/^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).{3}$/);
+    const test5 = new RegExp(
+      /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8}$/
+    );
+
+    if (value !== '') {
+      if (test5.test(value)) {
+        this.setState({ password: value });
+        this.setState({ passError: 'Strong' });
+      } else if (test4.test(value)) {
+        this.setState({ password: value });
+        this.setState({ passError: 'Normal' });
+      } else if (test3.test(value)) {
+        this.setState({ password: value });
+        this.setState({ passError: 'Weak' });
+      } else if (test2.test(value)) {
+        this.setState({ password: value });
+        this.setState({ passError: 'Too Short' });
+      }
+    } else {
+      this.setState({ passError: 'Please enter your password!' });
+    }
+  };
   render() {
     const { navigation } = this.props; // is ki wja sy navigation wala error gya
     return (
@@ -365,64 +363,96 @@ class CarOwner extends React.Component {
                       behavior='padding'
                       enabled
                     >
-                      
-                      <Block width={width * 0.8} style={{ marginBottom: 15 }}>
-                      {this.check_textInputChange ? 
-                        <Input
-                          success
-                          placeholder='Halay Noor'
-                          value={this.state.value}
-                          onChangeText={(value) =>
-                            this.textInputChange(value)
-                          }
-                          //  onBlur={this.handleValidUser.bind(this)}
-                          //  onEndEditing={this.handleValidUser.bind(this)}
-                          iconContent={
-                            <Icon
-                              size={16}
-                              color={argonTheme.COLORS.ICON}
-                             // name='support'
-                             // family='ArgonExtra'
-                             name='user' 
-                             type='font-awesome'
-                              style={styles.inputIcons}
-                            />
-                          }
-                          // blurOnSubmit={true}
-                          
-                       
-                          
-                        />:
-                        <Input
-                        error
-                    
-                        placeholder='Halay Noor'
-                        value={this.state.value}
-                        onChangeText={(value) =>this.textInputChange(value)}
-                        //onEndEditing={this.handleValidUser.bind(this)}
-                        iconContent={
-                          <Block
-                          middle
-                          style={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 10,
-                            backgroundColor: argonTheme.COLORS.INPUT_ERROR,
-                          }}
-                        >
-                          <Icon
-                            size={11}
-                            color={argonTheme.COLORS.ICON}
-                            name='user'
-                            type='font-awesome'
-                           // family='ArgonExtra'
-                          />
+                      <Block
+                        width={width * 0.8}
+                        style={{ marginBottom: 15, marginTop: 10 }}
+                        middle
+                        row
+                        space='evenly'
+                      >
+                        <Block flex left style={{ marginLeft: 14 }}>
+                          <Text color='#32325D' size={16}>
+                            Service Type
+                          </Text>
                         </Block>
-                        }
-                      />}
+                        <Picker
+                          selectedValue={this.state.selectedValueType}
+                          style={{
+                            width: 150,
+                            color: argonTheme.COLORS.DEFAULT,
+                            fontWeight: '400',
+                            fontSize: 10,
+                            marginLeft: 10,
+                          }}
+                          onValueChange={(itemValue, itemIndex) =>
+                            this.setState({ selectedValueType: itemValue })
+                          }
+                        >
+                          <Picker.Item label='Car Owner' value='Car Owner' />
+                          <Picker.Item label='Driver' value='Driver' />
+                          <Picker.Item
+                            label='Tourist Guide'
+                            value='Tourist Guide'
+                          />
+                        </Picker>
+                      </Block>
+                      <Block width={width * 0.8} style={{ marginBottom: 15 }}>
+                        {this.check_textInputChange ? (
+                          <Input
+                            success
+                            placeholder='Halay Noor'
+                            value={this.state.value}
+                            onChangeText={(value) =>
+                              this.textInputChange(value)
+                            }
+                            //  onBlur={this.handleValidUser.bind(this)}
+                            //  onEndEditing={this.handleValidUser.bind(this)}
+                            iconContent={
+                              <Icon
+                                size={16}
+                                color={argonTheme.COLORS.ICON}
+                                // name='support'
+                                // family='ArgonExtra'
+                                name='user'
+                                type='font-awesome'
+                                style={styles.inputIcons}
+                              />
+                            }
+                            // blurOnSubmit={true}
+                          />
+                        ) : (
+                          <Input
+                            error
+                            placeholder='Halay Noor'
+                            value={this.state.value}
+                            onChangeText={(value) =>
+                              this.textInputChange(value)
+                            }
+                            //onEndEditing={this.handleValidUser.bind(this)}
+                            iconContent={
+                              <Block
+                                middle
+                                style={{
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 10,
+                                  backgroundColor:
+                                    argonTheme.COLORS.INPUT_ERROR,
+                                }}
+                              >
+                                <Icon
+                                  size={11}
+                                  color={argonTheme.COLORS.ICON}
+                                  name='user'
+                                  type='font-awesome'
+                                  // family='ArgonExtra'
+                                />
+                              </Block>
+                            }
+                          />
+                        )}
                         {this.state.isValidUser ? null : (
-                        <Block row style={styles.passwordCheck}>
-                          
+                          <Block row style={styles.passwordCheck}>
                             <Text
                               bold
                               size={12}
@@ -430,62 +460,63 @@ class CarOwner extends React.Component {
                             >
                               {this.state.nameError}
                             </Text>
-                          
-                        </Block>)}
+                          </Block>
+                        )}
                       </Block>
 
                       <Block width={width * 0.8} style={{ marginBottom: 15 }}>
-                      {this.email_check ? 
-                        <Input
-                          
-                          success
-                          keyboardType='email-address'
-                          placeholder='Email'
-                          // onBlur={() => this.emailValidator()}
-                          // onEndEditing={() => this.emailValidator()}
-                          value={this.state.value}
-                          onChangeText={(value) =>
-                            this.setState({ email: value })
-                          }
-                          iconContent={
-                            <Icon
-                              size={16}
-                              color={argonTheme.COLORS.ICON}
-                              name='envelope'
-                              type='font-awesome'
-                              style={styles.inputIcons}
-                            />
-                          }
-                        />:
-                        <Input
-                        error
-                    
-                        placeholder='carvaan.@gmail.com'
-                        value={this.state.value}
-                        onChangeText={ (value)=>this.validate(value)}
-                      // onEndEditing={this.validateEmail.bind(this)}
-                        iconContent={
-                          <Block
-                          middle
-                          style={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 10,
-                            backgroundColor: argonTheme.COLORS.INPUT_ERROR,
-                          }}
-                        >
-                          <Icon
-                            size={11}
-                            color={argonTheme.COLORS.ICON}
-                            name='envelope'
-                            type='font-awesome'
-                           // family='ArgonExtra'
+                        {this.email_check ? (
+                          <Input
+                            success
+                            keyboardType='email-address'
+                            placeholder='Email'
+                            // onBlur={() => this.emailValidator()}
+                            // onEndEditing={() => this.emailValidator()}
+                            value={this.state.value}
+                            onChangeText={(value) =>
+                              this.setState({ email: value })
+                            }
+                            iconContent={
+                              <Icon
+                                size={16}
+                                color={argonTheme.COLORS.ICON}
+                                name='envelope'
+                                type='font-awesome'
+                                style={styles.inputIcons}
+                              />
+                            }
                           />
-                        </Block>
-                        }
-                      />}{this.state.isValidEmail ? null : (
-                        <Block row style={styles.passwordCheck}>
-                          
+                        ) : (
+                          <Input
+                            error
+                            placeholder='carvaan.@gmail.com'
+                            value={this.state.value}
+                            onChangeText={(value) => this.validate(value)}
+                            // onEndEditing={this.validateEmail.bind(this)}
+                            iconContent={
+                              <Block
+                                middle
+                                style={{
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 10,
+                                  backgroundColor:
+                                    argonTheme.COLORS.INPUT_ERROR,
+                                }}
+                              >
+                                <Icon
+                                  size={11}
+                                  color={argonTheme.COLORS.ICON}
+                                  name='envelope'
+                                  type='font-awesome'
+                                  // family='ArgonExtra'
+                                />
+                              </Block>
+                            }
+                          />
+                        )}
+                        {this.state.isValidEmail ? null : (
+                          <Block row style={styles.passwordCheck}>
                             <Text
                               bold
                               size={12}
@@ -493,62 +524,62 @@ class CarOwner extends React.Component {
                             >
                               {this.state.emailError}
                             </Text>
-                          
-                        </Block>)}
+                          </Block>
+                        )}
                       </Block>
                       <Block width={width * 0.8} style={{ marginBottom: 15 }}>
-                      {this.state.num_check? 
-                        <Input
-                        keyboardType='numeric'
-                        maxLength={12}
-                          success
-                          value={this.state.value}
-  
-                          placeholder='03170155365'
-                         
-                          value={this.state.value}
-                          onChangeText={(value) =>this.validateNumber(value)
-                          }
-                          iconContent={
-                            <Icon
-                              size={16}
-                              color={argonTheme.COLORS.ICON}
-                              name='phone'
-                              type='font-awesome'
-                              style={styles.inputIcons}
-                            />
-                          }
-                        />:
-                        <Input
-                        error
-                        keyboardType='numeric'
-                        maxLength={11}
-                        placeholder='03170155365'
-                        value={this.state.value}
-                        onChangeText={ (value)=>this.validateNumber(value)}
-                       // onEndEditing={this.handleValidUser.bind(this)}
-                        iconContent={
-                          <Block
-                          middle
-                          style={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 10,
-                            backgroundColor: argonTheme.COLORS.INPUT_ERROR,
-                          }}
-                        >
-                          <Icon
-                            size={11}
-                            color={argonTheme.COLORS.ICON}
-                            name='phone'
-                              type='font-awesome'
-                           // family='ArgonExtra'
+                        {this.state.num_check ? (
+                          <Input
+                            keyboardType='numeric'
+                            maxLength={12}
+                            success
+                            value={this.state.value}
+                            placeholder='03170155365'
+                            value={this.state.value}
+                            onChangeText={(value) => this.validateNumber(value)}
+                            iconContent={
+                              <Icon
+                                size={16}
+                                color={argonTheme.COLORS.ICON}
+                                name='phone'
+                                type='font-awesome'
+                                style={styles.inputIcons}
+                              />
+                            }
                           />
-                        </Block>
-                        }
-                      />}{this.state.isValid ? null : (
-                        <Block row style={styles.passwordCheck}>
-                          
+                        ) : (
+                          <Input
+                            error
+                            keyboardType='numeric'
+                            maxLength={11}
+                            placeholder='03170155365'
+                            value={this.state.value}
+                            onChangeText={(value) => this.validateNumber(value)}
+                            // onEndEditing={this.handleValidUser.bind(this)}
+                            iconContent={
+                              <Block
+                                middle
+                                style={{
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 10,
+                                  backgroundColor:
+                                    argonTheme.COLORS.INPUT_ERROR,
+                                }}
+                              >
+                                <Icon
+                                  size={11}
+                                  color={argonTheme.COLORS.ICON}
+                                  name='phone'
+                                  type='font-awesome'
+                                  // family='ArgonExtra'
+                                />
+                              </Block>
+                            }
+                          />
+                        )}
+                        {this.state.isValid ? null : (
+                          <Block row style={styles.passwordCheck}>
                             <Text
                               bold
                               size={12}
@@ -556,75 +587,73 @@ class CarOwner extends React.Component {
                             >
                               {this.state.numberError}
                             </Text>
-                          
-                        </Block>)}
-                      </Block>
-                     
-                      <Block width={width * 0.8}>
-                      {this.state.pass_chk ? 
-                        <Input
-                          success
-                          placeholder='Password'
-                          iconContent={
-                            <TouchableOpacity onPress={this.onIconPress}  
-                           >
-                          <Feather
-                            name={this.state.iconName}
-                            type='font-awesome'
-                           
-                            size={17}
-                          />
-                        </TouchableOpacity>
-                          }
-                          blurOnSubmit={true}
-                          secureTextEntry={this.state.secureTextEntry}
-                          value={this.state.value}
-                          onChangeText={(value)=>this.validatePass(value)}
-                        // onBlur={this.handleValidUser.bind(this)}
-                        // onEndEditing={this.handleValidUser.bind(this)}
-                          
-                        />:(
-                        <Input
-                        error
-                          //password
-                          //style={{ flexDirection: 'row' }}
-                        
-                          placeholder='Password'
-                          secureTextEntry={this.state.secureTextEntry}
-                          value={this.state.value}
-                          onChangeText={(value)=>this.validatePass(value)}
-                        
-                          iconContent={
-                            
-                            <TouchableOpacity onPress={this.onIconPress}  
-                            middle
-                            style={{
-                              width: 20,
-                              height: 20,
-                              borderRadius: 10,
-                              backgroundColor: argonTheme.COLORS.INPUT_ERROR,
-                            }}>
-                          <Feather
-                            name={this.state.iconName}
-                            type='font-awesome'
-                            color={argonTheme.COLORS.ICON}
-                            size={17}
-                          />
-                        </TouchableOpacity>
-                          }
-                        />
+                          </Block>
                         )}
-                                        <PassMeter
-                                        style={{width:40}}
-                        showLabels
-                        password={this.state.password}
-                        maxLength={MAX_LEN}
-                        minLength={MIN_LEN}
-                        labels={PASS_LABELS}
-                      />
-                      {this.state.isValidPass ? null : (
-                        <Block row style={styles.passwordCheck}>
-                          
+                      </Block>
+
+                      <Block width={width * 0.8}>
+                        {this.state.pass_chk ? (
+                          <Input
+                            success
+                            placeholder='Password'
+                            iconContent={
+                              <TouchableOpacity onPress={this.onIconPress}>
+                                <Feather
+                                  name={this.state.iconName}
+                                  type='font-awesome'
+                                  size={17}
+                                />
+                              </TouchableOpacity>
+                            }
+                            blurOnSubmit={true}
+                            secureTextEntry={this.state.secureTextEntry}
+                            value={this.state.value}
+                            onChangeText={(value) => this.validatePass(value)}
+                            // onBlur={this.handleValidUser.bind(this)}
+                            // onEndEditing={this.handleValidUser.bind(this)}
+                          />
+                        ) : (
+                          <Input
+                            error
+                            //password
+                            //style={{ flexDirection: 'row' }}
+
+                            placeholder='Password'
+                            secureTextEntry={this.state.secureTextEntry}
+                            value={this.state.value}
+                            onChangeText={(value) => this.validatePass(value)}
+                            iconContent={
+                              <TouchableOpacity
+                                onPress={this.onIconPress}
+                                middle
+                                style={{
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 10,
+                                  backgroundColor:
+                                    argonTheme.COLORS.INPUT_ERROR,
+                                }}
+                              >
+                                <Feather
+                                  name={this.state.iconName}
+                                  type='font-awesome'
+                                  color={argonTheme.COLORS.ICON}
+                                  size={17}
+                                />
+                              </TouchableOpacity>
+                            }
+                          />
+                        )}
+                        <PassMeter
+                          style={{ width: 40 }}
+                          showLabels
+                          password={this.state.password}
+                          maxLength={MAX_LEN}
+                          minLength={MIN_LEN}
+                          labels={PASS_LABELS}
+                        />
+                        {this.state.isValidPass ? null : (
+                          <Block row style={styles.passwordCheck}>
                             <Text
                               bold
                               size={12}
@@ -632,83 +661,65 @@ class CarOwner extends React.Component {
                             >
                               {this.state.passError}
                             </Text>
-                          
-                        </Block>)}
-                      </Block>
-{/*                     
-                      <Block  width={width*0.8}>
-                       
-                           <Text size={12} color={argonTheme.COLORS.MUTED}>
-                            password strength:
-                          </Text>
-                          <Text
-                            bold
-                            size={12}
-                            color={argonTheme.COLORS.SUCCESS}
-                          >
-                            {this.state.passError}
-                          </Text>  
-                          
-
-                        </Block> */}
-                         <Block width={width * 0.8}>
-                      {this.state.cPass_chk ? 
-                        <Input
-                          success
-                          placeholder='Confirm Password'
-                          iconContent={
-                            <TouchableOpacity onPress={this.onIconPress}  
-                           >
-                          <Feather
-                            name={this.state.iconName}
-                            type='font-awesome'
-                           
-                            size={17}
-                          />
-                        </TouchableOpacity>
-                          }
-                          blurOnSubmit={true}
-                          secureTextEntry={this.state.secureTextEntry}
-                          value={this.state.value}
-                          onChangeText={(value)=>this.validateCPass(value)}
-                        // onBlur={this.handleValidUser.bind(this)}
-                        // onEndEditing={this.handleValidUser.bind(this)}
-                          
-                        />:(
-                        <Input
-                        error
-                          //password
-                          //style={{ flexDirection: 'row' }}
-                        
-                          placeholder='Confirm Password'
-                          secureTextEntry={this.state.secureTextEntry}
-                          value={this.state.value}
-                          onChangeText={(value)=>this.validateCPass(value)}
-                        
-                          iconContent={
-                            
-                            <TouchableOpacity onPress={this.onIconPress}  
-                            middle
-                            style={{
-                              width: 20,
-                              height: 20,
-                              borderRadius: 10,
-                              backgroundColor: argonTheme.COLORS.INPUT_ERROR,
-                            }}>
-                          <Feather
-                            name={this.state.iconName}
-                            type='font-awesome'
-                            color={argonTheme.COLORS.ICON}
-                            size={17}
-                          />
-                        </TouchableOpacity>
-                          }
-                        />
+                          </Block>
                         )}
-                                        
-                      {this.state.isValidCPass? null : (
-                        <Block row style={styles.passwordCheck}>
-                          
+                      </Block>
+                      <Block width={width * 0.8}>
+                        {this.state.cPass_chk ? (
+                          <Input
+                            success
+                            placeholder='Confirm Password'
+                            iconContent={
+                              <TouchableOpacity onPress={this.onIconPress}>
+                                <Feather
+                                  name={this.state.iconName}
+                                  type='font-awesome'
+                                  size={17}
+                                />
+                              </TouchableOpacity>
+                            }
+                            blurOnSubmit={true}
+                            secureTextEntry={this.state.secureTextEntry}
+                            value={this.state.value}
+                            onChangeText={(value) => this.validateCPass(value)}
+                            // onBlur={this.handleValidUser.bind(this)}
+                            // onEndEditing={this.handleValidUser.bind(this)}
+                          />
+                        ) : (
+                          <Input
+                            error
+                            //password
+                            //style={{ flexDirection: 'row' }}
+
+                            placeholder='Confirm Password'
+                            secureTextEntry={this.state.secureTextEntry}
+                            value={this.state.value}
+                            onChangeText={(value) => this.validateCPass(value)}
+                            iconContent={
+                              <TouchableOpacity
+                                onPress={this.onIconPress}
+                                middle
+                                style={{
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 10,
+                                  backgroundColor:
+                                    argonTheme.COLORS.INPUT_ERROR,
+                                }}
+                              >
+                                <Feather
+                                  name={this.state.iconName}
+                                  type='font-awesome'
+                                  color={argonTheme.COLORS.ICON}
+                                  size={17}
+                                />
+                              </TouchableOpacity>
+                            }
+                          />
+                        )}
+
+                        {this.state.isValidCPass ? null : (
+                          <Block row style={styles.passwordCheck}>
                             <Text
                               bold
                               size={12}
@@ -716,68 +727,69 @@ class CarOwner extends React.Component {
                             >
                               {this.state.cpassError}
                             </Text>
-                          
-                        </Block>)}
+                          </Block>
+                        )}
                       </Block>
                       <Block width={width * 0.8}>
-                      {this.state.address_chk ? 
-                        <Input
-                          success
-                          placeholder='Address'
-                          iconContent={
-                            <Icon
-                                size={11}
-                                color={argonTheme.COLORS.ICON}
-                                name='address-card' 
-                                type='font-awesome'
-                               // family='ArgonExtra'
-                              />
-                          }
-                          blurOnSubmit={true}
-                          secureTextEntry={this.state.secureTextEntry}
-                          value={this.state.value}
-                          onChangeText={(value)=>this.validateAddress(value)}
-                        // onBlur={this.handleValidUser.bind(this)}
-                        // onEndEditing={this.handleValidUser.bind(this)}
-                          
-                        />:(
-                        <Input
-                        error
-                          //password
-                          //style={{ flexDirection: 'row' }}
-                        
-                          placeholder='Address'
-                          secureTextEntry={this.state.secureTextEntry}
-                          value={this.state.value}
-                          onChangeText={(value)=>this.validateAddress(value)}
-                        
-                          
+                        {this.state.address_chk ? (
+                          <Input
+                            success
+                            placeholder='Address'
                             iconContent={
-                              <Block
-                              middle
-                              style={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: 10,
-                                backgroundColor: argonTheme.COLORS.INPUT_ERROR,
-                              }}
-                            >
                               <Icon
                                 size={11}
                                 color={argonTheme.COLORS.ICON}
-                                name='address-card' 
+                                name='address-card'
                                 type='font-awesome'
-                               // family='ArgonExtra'
+                                // family='ArgonExtra'
                               />
-                            </Block>
                             }
-                          
-                        />
+                            blurOnSubmit={true}
+                            secureTextEntry={this.state.secureTextEntry}
+                            value={this.state.value}
+                            onChangeText={(value) =>
+                              this.validateAddress(value)
+                            }
+                            // onBlur={this.handleValidUser.bind(this)}
+                            // onEndEditing={this.handleValidUser.bind(this)}
+                          />
+                        ) : (
+                          <Input
+                            error
+                            //password
+                            //style={{ flexDirection: 'row' }}
+
+                            placeholder='Address'
+                            secureTextEntry={this.state.secureTextEntry}
+                            value={this.state.value}
+                            onChangeText={(value) =>
+                              this.validateAddress(value)
+                            }
+                            iconContent={
+                              <Block
+                                middle
+                                style={{
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 10,
+                                  backgroundColor:
+                                    argonTheme.COLORS.INPUT_ERROR,
+                                }}
+                              >
+                                <Icon
+                                  size={11}
+                                  color={argonTheme.COLORS.ICON}
+                                  name='address-card'
+                                  type='font-awesome'
+                                  // family='ArgonExtra'
+                                />
+                              </Block>
+                            }
+                          />
                         )}
-                                        
-                      {this.state.isValidAddress? null : (
-                        <Block row style={styles.passwordCheck}>
-                          
+
+                        {this.state.isValidAddress ? null : (
+                          <Block row style={styles.passwordCheck}>
                             <Text
                               bold
                               size={12}
@@ -785,56 +797,68 @@ class CarOwner extends React.Component {
                             >
                               {this.state.addressError}
                             </Text>
-                          
-                        </Block>)}
+                          </Block>
+                        )}
                       </Block>
-                      <Block row space="between">
-                    <Block middle >
-                    <Image
-                          source={{ uri: this.state.imageUrl }}
-                          // loadingIndicatorSource={require('./images/logo.png')}
-                          style={{ margin: 10, width: 80, height: 60,backgroundColor: '#e3e3e3' }}
-                        />
-                      <Text  bold
-                        color="#525F7F"
-                        size={15}
-                        style={{ marginTop:10 }}>Upload Picture</Text>
-                    </Block>
-                    <Block middle>
-                    <Icon
-              raised
-              reverse
-              name={'camera'}
-              type='font-awesome'
-              color={argonTheme.COLORS.SUCCESS}
-              onPress={this.getImageFromCamera}
-            />
-                    <Text
-                        bold
-                        color="#525F7F"
-                        size={15}
-                        style={ { marginTop: 25 }}
-                      >
-                        Camera
-                      </Text>
-                    </Block>
-                    <Block middle>
-                    <Icon
-              raised
-              reverse
-             
-              name={'picture-o'}
-              type='font-awesome'
-              color={argonTheme.COLORS.SUCCESS}
-              onPress={this.openImagePickerAsync}
-            />
-                     
-                      <Text  bold
-                        color="#525F7F"
-                        size={15}
-                        style={{ marginTop: 25 }}>Upload</Text>
-                    </Block>
-                  </Block>
+                      <Block row space='between'>
+                        <Block middle>
+                          <Image
+                            source={{ uri: this.state.imageUrl }}
+                            // loadingIndicatorSource={require('./images/logo.png')}
+                            style={{
+                              margin: 10,
+                              width: 80,
+                              height: 60,
+                              backgroundColor: '#e3e3e3',
+                            }}
+                          />
+                          <Text
+                            bold
+                            color='#525F7F'
+                            size={15}
+                            style={{ marginTop: 10 }}
+                          >
+                            Upload Picture
+                          </Text>
+                        </Block>
+                        <Block middle>
+                          <Icon
+                            raised
+                            reverse
+                            name={'camera'}
+                            type='font-awesome'
+                            color={argonTheme.COLORS.SUCCESS}
+                            onPress={this.getImageFromCamera}
+                          />
+                          <Text
+                            bold
+                            color='#525F7F'
+                            size={15}
+                            style={{ marginTop: 25 }}
+                          >
+                            Camera
+                          </Text>
+                        </Block>
+                        <Block middle>
+                          <Icon
+                            raised
+                            reverse
+                            name={'picture-o'}
+                            type='font-awesome'
+                            color={argonTheme.COLORS.SUCCESS}
+                            onPress={this.openImagePickerAsync}
+                          />
+
+                          <Text
+                            bold
+                            color='#525F7F'
+                            size={15}
+                            style={{ marginTop: 25 }}
+                          >
+                            Upload
+                          </Text>
+                        </Block>
+                      </Block>
                       {/* <Block
                         style={{ flex: 1, flexDirection: 'row', margin: 20 }}
                       >

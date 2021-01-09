@@ -10,7 +10,7 @@
 // import Reviews from '../screens/Reviews';
 // import RegisterCar from '../SpScreens/RegisterCar';
 // import MyBookings from '../SpScreens/MyBookings';
-// import MyBookingsDetails from '../SpScreens/MyBookingDetails';                                                     
+// import MyBookingsDetails from '../SpScreens/MyBookingDetails';
 // import SignOut from '../SpScreens/SignOut';
 // import React from 'react';
 // import { Easing, Animated, Dimensions } from 'react-native';
@@ -212,16 +212,16 @@
 //         name='Pro'
 //         component={Pro}
 //         options={{
-         
+
 //         }}
 //       />
 //        <Stack.Screen
 //         name='CarDetails'
 //         component={CarDetails}
 //         options={{
-         
+
 //         }}
-//       /> 
+//       />
 //     </Stack.Navigator>
 //   );
 // }
@@ -269,7 +269,7 @@
 //           headerShown: false
 //         }}
 //       />
-     
+
 //       <Stack.Screen
 //         name='TouristGuide'
 //         component={TouristGuide}
@@ -320,7 +320,7 @@
 //           ),
 //         }}
 //       />
-      
+
 //     </Stack.Navigator>
 //   );
 // }
@@ -670,27 +670,30 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import Home from '../SpScreens/SpHome';
-import Request from '../SpScreens/Requests';
-import Pro from '../SpScreens/Pro';
-import CarDetails from '../SpScreens/CarDetails';
+import Request from '../SpScreens/Owner/Requests';
+import Pro from '../SpScreens/Owner/Pro';
+import CarDetails from '../SpScreens/Owner/CarDetails';
 import Sp from '../SpScreens/Sp';
-import Driver from '../SpScreens/Driver';
+import Driver from '../SpScreens/Driver/Driver';
 import AboutUs from '../screens/AboutUs';
 import ContactUs from '../screens/ContactUs';
-import Profile from '../SpScreens/OwnerProfile';
+import Profile from '../SpScreens/Owner/OwnerProfile';
 import Reviews from '../screens/Reviews';
-import RegisterCar from '../SpScreens/RegisterCar';
-import MyBookings from '../SpScreens/MyBookings';
-import MyBookingDetails from '../SpScreens/MyBookingDetails';                                                     
-import SignOut from '../SpScreens/SignOut';
-import TouristGuide from '../SpScreens/TouristGuide';
+import RegisterCar from '../SpScreens/Owner/RegisterCar';
+import MyBookings from '../SpScreens/Owner/MyBookings';
+import MyBookingDetails from '../SpScreens/Owner/MyBookingDetails';
+import SignOut from '../SpScreens/Owner/SignOut';
+import TouristGuide from '../SpScreens/TouristGuide/TouristGuide';
+import requestDetails from '../SpScreens/Owner/requestDetails';
+import OwnerCurrentBookings from '../SpScreens/Owner/myCurrentBookings';
+import OwnerCurrentBookingsDetails from '../SpScreens/Owner/myCurrentBookingDetails';
 // drawer
 import CustomDrawerContentOwner from './CarMenu'; //importing from menu ???
 
 // header for screens
-import { Icon, Header } from '../components';
+import { Header } from '../components';
 import { argonTheme, tabs } from '../constants';
-
+import { Icon } from 'react-native-elements';
 // add a stack screen here for spdashboard
 const { width } = Dimensions.get('screen');
 
@@ -719,8 +722,44 @@ function FavoriteStack(props) {
               scene={scene}
             />
           ),
-
-         
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+function CurrentBookingStack(props) {
+  return (
+    <Stack.Navigator initialRouteName='Menu'>
+      <Stack.Screen
+        name='OwnerCurrentBookings'
+        component={OwnerCurrentBookings}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title=''
+              back
+              white
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name='OwnerCurrentBookingsDetails'
+        component={OwnerCurrentBookingsDetails}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title=''
+              back
+              white
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
         }}
       />
     </Stack.Navigator>
@@ -743,8 +782,22 @@ function RequestStack(props) {
               scene={scene}
             />
           ),
-
-         
+        }}
+      />
+      <Stack.Screen
+        name='requestDetails'
+        component={requestDetails}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title=''
+              back
+              white
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
         }}
       />
     </Stack.Navigator>
@@ -753,20 +806,11 @@ function RequestStack(props) {
 function BookingStack(props) {
   return (
     <Stack.Navigator initialRouteName='Menu'>
+      <Stack.Screen name='MyBookins' component={MyBookings} options={{}} />
       <Stack.Screen
-        name='MyBookins'
-        component={MyBookings}
-        options={{
-          
-          
-        }}
-      />
-       <Stack.Screen
         name='MyBookingDetails'
         component={MyBookingDetails}
-        options={{
-         
-        }}
+        options={{}}
       />
     </Stack.Navigator>
   );
@@ -788,8 +832,6 @@ function ProfileStack(props) {
               scene={scene}
             />
           ),
-
-         
         }}
       />
     </Stack.Navigator>
@@ -810,15 +852,6 @@ function MenuStack(props) {
               transparent
               navigation={navigation}
               scene={scene}
-            />
-          ),
-
-          headerLeft: () => (
-            <Icon
-              name='menu'
-              size={24}
-              color='white'
-              onPress={() => navigation.toggleDrawer()}
             />
           ),
         }}
@@ -842,26 +875,14 @@ function MenuStack(props) {
 function CarStack(props) {
   return (
     <Stack.Navigator initialRouteName='Pro'>
-      <Stack.Screen
-        name='Pro'
-        component={Pro}
-        options={{
-         
-        }}
-      />
-       <Stack.Screen
-        name='CarDetails'
-        component={CarDetails}
-        options={{
-         
-        }}
-      /> 
+      <Stack.Screen name='Pro' component={Pro} options={{}} />
+      <Stack.Screen name='CarDetails' component={CarDetails} options={{}} />
     </Stack.Navigator>
   );
 }
 function HomeStack(props) {
   return (
-    <Stack.Navigator mode='card' >
+    <Stack.Navigator mode='card'>
       <Stack.Screen
         name='Home'
         component={Home}
@@ -900,10 +921,10 @@ function HomeStack(props) {
         name='RegisterCar'
         component={MyTabs}
         options={{
-          headerShown: false
+          headerShown: false,
         }}
       />
-     
+
       <Stack.Screen
         name='TouristGuide'
         component={TouristGuide}
@@ -918,12 +939,7 @@ function HomeStack(props) {
         //   ),
         // }}
       />
-      <Stack.Screen
-        name='Driver'
-        component={Driver}
-         options={{
-        }}
-      />
+      <Stack.Screen name='Driver' component={Driver} options={{}} />
     </Stack.Navigator>
   );
 }
@@ -944,10 +960,8 @@ function ReservationStack(props) {
               scene={scene}
             />
           ),
-         
         }}
       />
-      
     </Stack.Navigator>
   );
 }
@@ -989,7 +1003,7 @@ function ContactStack(props) {
 }
 function AboutStack(props) {
   return (
-    <Stack.Navigator initialRouteName='Menu' >
+    <Stack.Navigator initialRouteName='Menu'>
       <Stack.Screen
         name='About Us'
         component={AboutUs}
@@ -1076,7 +1090,7 @@ function AppStack(props) {
       <Drawer.Screen name='Profile' component={ProfileStack} />
       <Drawer.Screen name='My Bookings' component={BookingStack} />
       <Drawer.Screen name='Request' component={RequestStack} />
-      <Drawer.Screen name='option' component={ReservationStack} />
+      <Drawer.Screen name='Current Booking' component={CurrentBookingStack} />
       <Drawer.Screen name='sign Out' component={FavoriteStack} />
     </Drawer.Navigator>
   );
@@ -1084,7 +1098,7 @@ function AppStack(props) {
 
 function MyTabs() {
   return (
-    <Tab.Navigator  >
+    <Tab.Navigator>
       <Tab.Screen
         name='Register Car'
         component={RegisterCar}
@@ -1093,8 +1107,10 @@ function MyTabs() {
             <Icon
               name='car'
               type='font-awesome'
-              size={24}
-              iconStyle={{ color: tintColor }}
+              size={20}
+              color={
+                focused ? argonTheme.COLORS.PRIMARY : argonTheme.COLORS.PRIMARY
+              }
             />
           ),
         }}
@@ -1105,10 +1121,12 @@ function MyTabs() {
         options={{
           tabBarIcon: ({ tintColor, focused }) => (
             <Icon
-              name='info-circle'
+              name='home'
               type='font-awesome'
-              size={24}
-              iconStyle={{ color: tintColor }}
+              size={20}
+              color={
+                focused ? argonTheme.COLORS.PRIMARY : argonTheme.COLORS.PRIMARY
+              }
             />
           ),
         }}

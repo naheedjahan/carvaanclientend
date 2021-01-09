@@ -42,7 +42,21 @@ class CCFieldValidator extends React.Component {
   componentDidMount() {
     this.subscribeToPubNub();
   }
-
+  //c
+  componentWillUnmount(){
+    if(this.pubnub){
+      this.pubnub.unsubscribe({
+        channels: ['location']
+       })
+       var existingListener = {
+          message: function() {
+        }
+      }
+    
+      pubnub.removeListener(existingListener)
+    
+    }
+  }
   subscribeToPubNub = () => {
     this.pubnub.addListener({
       message: (msg) => {
@@ -71,24 +85,8 @@ class CCFieldValidator extends React.Component {
       channels: ['location'],
       withPresence: true,
     });
-    // this.pubnub.getMessage('location', msg => {
-    //   const { coordinate } = this.state;
-    //   const { latitude, longitude } = msg.message;
-    //   const newCoordinate = { latitude, longitude };
-
-    //   if (Platform.OS === 'android') {
-    //     if (this.marker) {
-    //       this.marker._component.animateMarkerToCoordinate(newCoordinate, 500);
-    //     }
-    //   } else {
-    //     coordinate.timing(newCoordinate).start();
-    //   }
-
-    //   this.setState({
-    //     latitude,
-    //     longitude,
-    //   });
-    // });
+    
+   
   };
 
   getMapRegion = () => ({
@@ -133,9 +131,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 });
-
-export default CCFieldValidator;
-
+import Test from './test';
+//export default CCFieldValidator;
+export default Test;
 //--------------------------------------
 // import React, { Component } from "react";
 // import { StyleSheet, View,AsyncStorage,Dimensions } from "react-native";

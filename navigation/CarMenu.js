@@ -20,7 +20,7 @@ function CustomDrawerContentOwner({
     'Profile',
     'My Bookings', // adding screen variable here
     'Request',
-    'option', // edit profile
+    'Current Booking', // edit profile
     'sign Out',
   ];
   return (
@@ -65,7 +65,7 @@ function CustomDrawerContentOwner({
               Become a service provider
             </Text>
           </Block> */}
-          <DrawerCustomItem  />
+          <DrawerCustomItem />
         </ScrollView>
       </Block>
     </Block>

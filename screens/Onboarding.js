@@ -16,9 +16,18 @@ import Images from '../constants/Images';
 class Onboarding extends React.Component {
   KeepMelogIn = async () => {
     const token = await AsyncStorage.getItem('Ownertoken');
+    const Drivertoken = await AsyncStorage.getItem('DriverToken');
+    const Touristtoken = await AsyncStorage.getItem('TouristGuide');
+
     if (token != null) {
       this.props.navigation.navigate('CarOwnerMenu');
       console.log(token);
+    } else if (Drivertoken != null) {
+      this.props.navigation.navigate('Driver');
+      console.log(Drivertoken);
+    } else if (Touristtoken != null) {
+      this.props.navigation.navigate('TouristGuide');
+      console.log(Touristtoken);
     } else this.props.navigation.navigate('loginSp');
   };
 

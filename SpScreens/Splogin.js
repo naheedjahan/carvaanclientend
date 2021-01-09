@@ -7,7 +7,8 @@ import {
   KeyboardAvoidingView,
   AsyncStorage,
   View,
-  TouchableOpacity
+  Picker,
+  TouchableOpacity,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { Block, Checkbox, Text, theme } from 'galio-framework';
@@ -16,10 +17,11 @@ import { Button, Input } from '../components';
 import { Icon } from 'react-native-elements';
 import { Images, argonTheme } from '../constants';
 import * as SecureStore from 'expo-secure-store';
-import PassMeter from "react-native-passmeter";
+import PassMeter from 'react-native-passmeter';
+import { baseUrl } from '../baseUrl/baseUrl';
 const MAX_LEN = 15,
   MIN_LEN = 6,
-  PASS_LABELS = ["Too Short", "Weak", "Normal", "Strong", "Secure"];
+  PASS_LABELS = ['Too Short', 'Weak', 'Normal', 'Strong', 'Secure'];
 //----------
 //import screens from '../screens';
 //----------
@@ -31,6 +33,7 @@ class login extends React.Component {
       email: '',
       password: '',
       remember: false,
+      selectedValueType: 'Car Owner',
       //--------
       // nameError: '',
       // emailError: '',
@@ -40,32 +43,32 @@ class login extends React.Component {
       // isValidUser: true,
       // isValidPassword: true,
       //---------
-       //--------
-       secureTextEntry: true,
-       iconName: 'eye-off',
-       //-------
-       nameError: '',
-       emailError: '',
-       numberError: '',
-       passError:'',
-       cpassError:'',
-       addressError:'',
-       //-------------
-       check_textInputChange: false,
-       email_check:false,
-       num_check:false,
-       pass_chk:false,
-       cPass_chk:false,
-       address_chk:false,
-       //--------------------
-       isValidEmail:true,
-       isValidUser: true,
-       isValidPassword: true,
-       isValid:true,
-       isValidPass:true,
-       isValidCPass:true,
-       isValidAddress:true,
-       //---------
+      //--------
+      secureTextEntry: true,
+      iconName: 'eye-off',
+      //-------
+      nameError: '',
+      emailError: '',
+      numberError: '',
+      passError: '',
+      cpassError: '',
+      addressError: '',
+      //-------------
+      check_textInputChange: false,
+      email_check: false,
+      num_check: false,
+      pass_chk: false,
+      cPass_chk: false,
+      address_chk: false,
+      //--------------------
+      isValidEmail: true,
+      isValidUser: true,
+      isValidPassword: true,
+      isValid: true,
+      isValidPass: true,
+      isValidCPass: true,
+      isValidAddress: true,
+      //---------
     };
   }
 
@@ -84,28 +87,23 @@ class login extends React.Component {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(text) === false) {
       this.setState({
-        isValidEmail: false
+        isValidEmail: false,
       });
-      this.setState({ email_check: false })
-      console.log("Email is Not Correct");
-      this.setState({ emailError: "Email is Not Correct" })
-      this.setState({ email: text })
-     
-  
-    }
-    else if(this.state.email == ''){
-      
-      this.setState({ email_check: false })
-      this.setState({ isValidEmail: false })
+      this.setState({ email_check: false });
+      console.log('Email is Not Correct');
+      this.setState({ emailError: 'Email is Not Correct' });
+      this.setState({ email: text });
+    } else if (this.state.email == '') {
+      this.setState({ email_check: false });
+      this.setState({ isValidEmail: false });
       this.setState({ emailError: 'Email field cannot be empty!' });
+    } else {
+      this.email_check = true;
+      this.setState({ isValidEmail: true });
+      this.setState({ email: text });
+      console.log('Email is Correct');
     }
-    else {
-      this.email_check=true;
-      this.setState({ isValidEmail: true })
-      this.setState({ email: text })
-      console.log("Email is Correct");
-    }
-  }
+  };
   onIconPress = () => {
     let iconName = this.state.secureTextEntry ? 'eye' : 'eye-off';
 
@@ -114,43 +112,41 @@ class login extends React.Component {
       iconName: iconName,
     });
   };
-  validateNumber=(value)=>{
+  validateNumber = (value) => {
     if (value !== '') {
       this.setState({ num_check: true });
-      this.setState({ number: value});
+      this.setState({ number: value });
       // var pattern = new RegExp(/^[0-9\b]+$/);
-    
+
       // if (!pattern.test(value)) {
-    
+
       //   this.isValid = false;
       //   this.setState({ numberError: 'Please enter only number!' });
-       
-    
+
       // }else if(value.length != 11){
-    
+
       //   this.isValid = false;
       //   this.setState({ numberError: 'Please enter valid phone number!' })
-        
-    
+
       // }
-    }
-    else{
+    } else {
       this.setState({ num_check: false });
       this.setState({ isValid: false });
-      this.setState({ passError: 'Please enter your phone number!' });    }
-  }
-  validatePass=(value)=>{
+      this.setState({ passError: 'Please enter your phone number!' });
+    }
+  };
+  validatePass = (value) => {
     if (value !== '') {
-      this.setState({password:value});
+      this.setState({ password: value });
       this.setState({ pass_chk: true });
       this.setState({ isValidPass: true });
-      this.setState({ passError: '' }); 
-    }
-    else{
+      this.setState({ passError: '' });
+    } else {
       this.setState({ pass_check: false });
       this.setState({ isValidPass: false });
-      this.setState({ passError: 'Please enter your Password!' });    }
-  }
+      this.setState({ passError: 'Please enter your Password!' });
+    }
+  };
   handleLogin() {
     if (this.state.remember)
       SecureStore.setItemAsync(
@@ -164,33 +160,91 @@ class login extends React.Component {
       SecureStore.deleteItemAsync('userinfo').catch((error) =>
         console.log('Could not delete user info', error)
       );
-    // localhost means your mobile cannot access this
-    fetch('http://192.168.1.153:5000/api/owner/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-      }),
-    })
-      .then((res) => res.json())
-      .then(async (data) => {
-        try {
-          if (!data.errors) {
-            console.log(data);
-            await AsyncStorage.setItem('Ownertoken', data.token);
-            const token = await AsyncStorage.getItem('Ownertoken');
-            this.props.navigation.navigate('CarOwnerMenu');
-            console.log(token);
-          } else {
-            data.errors.forEach((error) => alert(error.msg));
+    const type = this.state.selectedValueType;
+    if (type == 'Car Owner') {
+      fetch(baseUrl + 'api/owner/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: this.state.email,
+          password: this.state.password,
+        }),
+      })
+        .then((res) => res.json())
+        .then(async (data) => {
+          try {
+            if (!data.errors) {
+              console.log(data);
+              await AsyncStorage.setItem('Ownertoken', data.token);
+              const token = await AsyncStorage.getItem('Ownertoken');
+              this.props.navigation.navigate('CarOwnerMenu');
+              console.log(token);
+            } else {
+              data.errors.forEach((error) => alert(error.msg));
+            }
+          } catch (e) {
+            console.log('error hai', e);
           }
-        } catch (e) {
-          console.log('error hai', e);
-        }
-      });
+        });
+    } else if (type == 'Driver') {
+      fetch(baseUrl + 'api/driver/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: this.state.email,
+          password: this.state.password,
+        }),
+      })
+        .then((res) => res.json())
+        .then(async (data) => {
+          try {
+            if (!data.errors) {
+              console.log(data);
+              await AsyncStorage.setItem('DriverToken', data.token);
+              const token = await AsyncStorage.getItem('DriverToken');
+              this.props.navigation.navigate('Driver');
+              console.log(token);
+            } else {
+              data.errors.forEach((error) => alert(error.msg));
+            }
+          } catch (e) {
+            console.log('error hai', e);
+          }
+        });
+    } else if (type == 'Tourist Guide') {
+      fetch(baseUrl + 'api/tourist/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: this.state.email,
+          password: this.state.password,
+        }),
+      })
+        .then((res) => res.json())
+        .then(async (data) => {
+          try {
+            if (!data.errors) {
+              console.log(data);
+              await AsyncStorage.setItem('TouristGuide', data.token);
+              const token = await AsyncStorage.getItem('TouristGuide');
+              this.props.navigation.navigate('TouristGuide');
+              console.log(token);
+            } else {
+              data.errors.forEach((error) => alert(error.msg));
+            }
+          } catch (e) {
+            console.log('error hai', e);
+          }
+        });
+    }
+
+    // localhost means your mobile cannot access this
   }
   render() {
     const { navigation } = this.props;
@@ -218,10 +272,42 @@ class login extends React.Component {
                     behavior='padding'
                     enabled
                   >
+                    <Block
+                      width={width * 0.8}
+                      style={{ marginBottom: 15, marginTop: 10 }}
+                      middle
+                      row
+                      space='evenly'
+                    >
+                      <Block flex left style={{ marginLeft: 14 }}>
+                        <Text color='#32325D' size={16}>
+                          Service Type
+                        </Text>
+                      </Block>
+                      <Picker
+                        selectedValue={this.state.selectedValueType}
+                        style={{
+                          width: 150,
+                          color: argonTheme.COLORS.DEFAULT,
+                          fontWeight: '400',
+                          fontSize: 10,
+                          marginLeft: 10,
+                        }}
+                        onValueChange={(itemValue, itemIndex) =>
+                          this.setState({ selectedValueType: itemValue })
+                        }
+                      >
+                        <Picker.Item label='Car Owner' value='Car Owner' />
+                        <Picker.Item label='Driver' value='Driver' />
+                        <Picker.Item
+                          label='Tourist Guide'
+                          value='Tourist Guide'
+                        />
+                      </Picker>
+                    </Block>
                     <Block width={width * 0.8} style={{ marginBottom: 15 }}>
-                      {this.email_check ? 
+                      {this.email_check ? (
                         <Input
-                          
                           success
                           keyboardType='email-address'
                           placeholder='Email'
@@ -240,115 +326,105 @@ class login extends React.Component {
                               style={styles.inputIcons}
                             />
                           }
-                        />:
+                        />
+                      ) : (
                         <Input
-                        error
-                    
-                        placeholder='carvaan.@gmail.com'
-                        value={this.state.value}
-                        onChangeText={ (value)=>this.validate(value)}
-                      // onEndEditing={this.validateEmail.bind(this)}
-                        iconContent={
-                          <Block
-                          middle
-                          style={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 10,
-                            backgroundColor: argonTheme.COLORS.INPUT_ERROR,
-                          }}
-                        >
-                          <Icon
-                            size={11}
-                            color={argonTheme.COLORS.ICON}
-                            name='envelope'
-                            type='font-awesome'
-                           // family='ArgonExtra'
-                          />
-                        </Block>
-                        }
-                      />}{this.state.isValidEmail ? null : (
-                        <Block row style={styles.passwordCheck}>
-                          
-                            <Text
-                              bold
-                              size={12}
-                              color={argonTheme.COLORS.ERROR}
+                          error
+                          placeholder='carvaan.@gmail.com'
+                          value={this.state.value}
+                          onChangeText={(value) => this.validate(value)}
+                          // onEndEditing={this.validateEmail.bind(this)}
+                          iconContent={
+                            <Block
+                              middle
+                              style={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 10,
+                                backgroundColor: argonTheme.COLORS.INPUT_ERROR,
+                              }}
                             >
-                              {this.state.emailError}
-                            </Text>
-                          
-                        </Block>)}
-                      </Block>
+                              <Icon
+                                size={11}
+                                color={argonTheme.COLORS.ICON}
+                                name='envelope'
+                                type='font-awesome'
+                                // family='ArgonExtra'
+                              />
+                            </Block>
+                          }
+                        />
+                      )}
+                      {this.state.isValidEmail ? null : (
+                        <Block row style={styles.passwordCheck}>
+                          <Text bold size={12} color={argonTheme.COLORS.ERROR}>
+                            {this.state.emailError}
+                          </Text>
+                        </Block>
+                      )}
+                    </Block>
 
                     <Block width={width * 0.8}>
-                      {this.state.pass_chk ? 
+                      {this.state.pass_chk ? (
                         <Input
                           success
                           placeholder='Password'
                           iconContent={
-                            <TouchableOpacity onPress={this.onIconPress}  
-                           >
-                          <Feather
-                            name={this.state.iconName}
-                            type='font-awesome'
-                           
-                            size={17}
-                          />
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={this.onIconPress}>
+                              <Feather
+                                name={this.state.iconName}
+                                type='font-awesome'
+                                size={17}
+                              />
+                            </TouchableOpacity>
                           }
                           blurOnSubmit={true}
                           secureTextEntry={this.state.secureTextEntry}
                           value={this.state.value}
-                          onChangeText={(value)=>this.validatePass(value)}
-                        // onBlur={this.handleValidUser.bind(this)}
-                        // onEndEditing={this.handleValidUser.bind(this)}
-                          
-                        />:(
+                          onChangeText={(value) => this.validatePass(value)}
+                          // onBlur={this.handleValidUser.bind(this)}
+                          // onEndEditing={this.handleValidUser.bind(this)}
+                        />
+                      ) : (
                         <Input
-                        error
+                          error
                           //password
                           //style={{ flexDirection: 'row' }}
-                        
+
                           placeholder='Password'
                           secureTextEntry={this.state.secureTextEntry}
                           value={this.state.value}
-                          onChangeText={(value)=>this.validatePass(value)}
-                        
+                          onChangeText={(value) => this.validatePass(value)}
                           iconContent={
-                            
-                            <TouchableOpacity onPress={this.onIconPress}  
-                            middle
-                            style={{
-                              width: 20,
-                              height: 20,
-                              borderRadius: 10,
-                              backgroundColor: argonTheme.COLORS.INPUT_ERROR,
-                            }}>
-                          <Feather
-                            name={this.state.iconName}
-                            type='font-awesome'
-                            color={argonTheme.COLORS.ICON}
-                            size={17}
-                          />
-                        </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={this.onIconPress}
+                              middle
+                              style={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 10,
+                                backgroundColor: argonTheme.COLORS.INPUT_ERROR,
+                              }}
+                            >
+                              <Feather
+                                name={this.state.iconName}
+                                type='font-awesome'
+                                color={argonTheme.COLORS.ICON}
+                                size={17}
+                              />
+                            </TouchableOpacity>
                           }
                         />
-                        )}
-                                       
+                      )}
+
                       {this.state.isValidPass ? null : (
                         <Block row style={styles.passwordCheck}>
-                          
-                            <Text
-                              bold
-                              size={12}
-                              color={argonTheme.COLORS.ERROR}
-                            >
-                              {this.state.passError}
-                            </Text>
-                          
-                        </Block>)}
-                      </Block>
+                          <Text bold size={12} color={argonTheme.COLORS.ERROR}>
+                            {this.state.passError}
+                          </Text>
+                        </Block>
+                      )}
+                    </Block>
                     <View style={styles.container}>
                       <Text
                         color='#8898AA'
@@ -375,8 +451,8 @@ class login extends React.Component {
                       <Button
                         color='primary'
                         style={styles.createButton}
-                       onPress={() => this.handleLogin()}
-                       //onPress={()=>navigation.navigate('CarOwnerMenu')}
+                        onPress={() => this.handleLogin()}
+                        //onPress={()=>navigation.navigate('CarOwnerMenu')}
                       >
                         <Text bold size={14} color={argonTheme.COLORS.WHITE}>
                           Continue
@@ -444,7 +520,7 @@ const styles = StyleSheet.create({
   createButton: {
     width: width * 0.5,
     //marginTop: 25,
-    marginBottom: 200,
+    marginBottom: 100,
   },
   container: {
     flex: 1,

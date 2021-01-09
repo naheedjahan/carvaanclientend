@@ -14,7 +14,8 @@ import loginSp from './SpScreens/Splogin';
 import Register from './screens/Register';
 import Screens from './navigation/Screens';
 import CarOwnerMenu from './navigation/CarOwner';
-
+import TouristGuide from './navigation/TouristGuide';
+import Driver from './navigation/Driver';
 //-----------------------------------
 
 import { Icon, Header } from './components';
@@ -60,7 +61,6 @@ export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
-  
 
   render() {
     if (!this.state.isLoadingComplete) {
@@ -108,6 +108,20 @@ export default class App extends React.Component {
                   headerTransparent: true,
                 }}
               />
+              <Stack.Screen
+                name='TouristGuide'
+                component={TouristGuide}
+                options={{
+                  headerTransparent: true,
+                }}
+              />
+              <Stack.Screen
+                name='Driver'
+                component={Driver}
+                options={{
+                  headerTransparent: true,
+                }}
+              />
             </Stack.Navigator>
           </Block>
         </NavigationContainer>
@@ -128,7 +142,6 @@ export default class App extends React.Component {
   _handleFinishLoading = () => {
     this.setState({ isLoadingComplete: true });
   };
-  
 }
 //---------------- test code
 // import React from 'react';

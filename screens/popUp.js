@@ -5,16 +5,63 @@ import {
   Dimensions,
   StatusBar,
   KeyboardAvoidingView,
-  View
+  View,
+  AsyncStorage,
 } from 'react-native';
 import { Block, Checkbox, Text, theme } from 'galio-framework';
-
+import { baseUrl } from '../baseUrl/baseUrl';
 import { Button, Input } from '../components';
 import { Images, argonTheme } from '../constants';
-import {Icon } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 const { width, height } = Dimensions.get('screen');
 class popUp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      check: false,
+    };
+  }
+  componentDidMount() {
+    this.getScreen();
+  }
+  getScreen = async () => {
+    const requestId = this.props.route.params.RequestId;
+    console.log('coming here---' + requestId);
+    const token = await AsyncStorage.getItem('Customertoken');
+    const response = await fetch(
+      baseUrl + 'api/customer/checkrequest/' + requestId,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then(async (data) => {
+        try {
+          if (!data.errors) {
+            console.log(data);
+            // var x = data.map(function (item) {
+            //   return item['ownerBooking'];
+            // });
+
+            // const lang = x.toString();
+            // console.log(lang);
+            if (data == 'true') {
+              this.setState({ check: true });
+            }
+          } else {
+            data.errors.forEach((error) => alert(error.msg));
+          }
+        } catch (e) {
+          console.log('error hai', e);
+        }
+      });
+  };
   render() {
+    const RequestId = this.props.route.params.RequestId;
     const { navigation } = this.props;
     return (
       <Block flex middle>
@@ -30,21 +77,21 @@ class popUp extends React.Component {
             >
               <Block flex>
                 <Block flex middle>
-              
-            <Icon
-              name={'check'}
-              type='font-awesome'
-              color='#2DCE89'
-              raised
-              reverse
-            />
-            <Text style={{
-                    fontSize: 14,
-                    color: "#2DCE89",
-                    
-                }}>Your Request Has Been Sent To Vehicle Owner</Text>
-           
-     
+                  <Icon
+                    name={'check'}
+                    type='font-awesome'
+                    color='#2DCE89'
+                    raised
+                    reverse
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#2DCE89',
+                    }}
+                  >
+                    Your Request Has Been Sent To Vehicle Owner
+                  </Text>
                 </Block>
                 <Block flex center>
                   <KeyboardAvoidingView
@@ -52,18 +99,35 @@ class popUp extends React.Component {
                     behavior='padding'
                     enabled
                   >
-                   
                     <Block middle>
-                      <Button
-                        color='primary'
-                        style={styles.createButton}
-                        //onPress={() => navigation.navigate('CreditCardInput')} // yha py isy pain ho ri hy :/
-                        onPress={() => navigation.navigate('CCFieldValidator')} 
-                      >
-                        <Text bold size={14} color={argonTheme.COLORS.WHITE}>
-                          Add Payment
-                        </Text>
-                      </Button>
+                      {this.state.check ? (
+                        <Button
+                          color={argonTheme.COLORS.WHITE}
+                          style={styles.createButton}
+                          //onPress={() => navigation.navigate('CCFieldValidator')}
+                          disabled={!this.state.check}
+                        >
+                          <Text bold size={14} color={argonTheme.COLORS.INFO}>
+                            Add Payment
+                          </Text>
+                        </Button>
+                      ) : (
+                        <Button
+                          color='primary'
+                          style={styles.createButton}
+                          onPress={() =>
+                            navigation.navigate('CreditCardInput', {
+                              driver: 'car',
+                              RequestId: RequestId,
+                            })
+                          } // yha py isy pain ho ri hy :/
+                          //onPress={() => navigation.navigate('CCFieldValidator')}
+                        >
+                          <Text bold size={14} color={argonTheme.COLORS.WHITE}>
+                            Add Payment
+                          </Text>
+                        </Button>
+                      )}
                     </Block>
                   </KeyboardAvoidingView>
                 </Block>

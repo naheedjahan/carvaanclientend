@@ -18,7 +18,9 @@ import { Images, argonTheme } from '../constants';
 
 const { width, height } = Dimensions.get('screen');
 class Home extends Component {
+ 
   render() {
+    
     const { navigation } = this.props;
     return (
       <ScrollView

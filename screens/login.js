@@ -13,7 +13,7 @@ import { CheckBox } from 'react-native-elements';
 import { Button, Icon, Input } from '../components';
 import { Images, argonTheme } from '../constants';
 import * as SecureStore from 'expo-secure-store';
-import baseUrl from '../baseUrl/baseUrl';
+import { baseUrl } from '../baseUrl/baseUrl';
 //----------
 //import screens from '../screens';
 //----------
@@ -22,8 +22,8 @@ class login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: 'naheedjahan96@gmail.com',
-      password: '1111',
+      email: '',
+      password: '',
       remember: false,
       //--------
       nameError: '',
@@ -61,7 +61,7 @@ class login extends React.Component {
       );
     console.log('yahan a raha');
     // localhost means your mobile cannot access this
-    fetch('http://192.168.1.153:5000/api/customer/auth/login', {
+    fetch(baseUrl + 'api/customer/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

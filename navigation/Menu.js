@@ -19,7 +19,7 @@ function CustomDrawerContent({
     'Home',
     'Profile',
     'Reviews', // adding screen variable here
-    'Rate Our App',
+    'Location',
     'Settings', // edit profile
     'Log Out',
   ];
@@ -65,7 +65,7 @@ function CustomDrawerContent({
               Become a service provider
             </Text>
           </Block> */}
-          <DrawerCustomItem title='Logout' navigation={navigation} />
+          <DrawerCustomItem />
         </ScrollView>
       </Block>
     </Block>

@@ -237,7 +237,7 @@ class Header extends React.Component {
         <Button
           shadowless
           style={[styles.tab, styles.divider]}
-          onPress={() => navigation.navigate('RegisterCar')}
+          // onPress={() => navigation.navigate('RegisterCar')}
         >
           <Block row middle>
             <Text size={14} style={styles.tabTitle}>
@@ -248,7 +248,7 @@ class Header extends React.Component {
         <Button
           shadowless
           style={styles.tab}
-          onPress={() => navigation.navigate('SpCarRent')}
+          // onPress={() => navigation.navigate('SpCarRent')}
         >
           <Block row middle>
             <Text size={14} style={styles.tabTitle}>
@@ -267,7 +267,7 @@ class Header extends React.Component {
         <Button
           shadowless
           style={[styles.tab, styles.divider]}
-          onPress={() => navigation.navigate('RegisterDT')}
+          //  onPress={() => navigation.navigate('RegisterDT')}
         >
           <Block row middle>
             <Text size={14} style={styles.tabTitle}>
@@ -278,7 +278,7 @@ class Header extends React.Component {
         <Button
           shadowless
           style={styles.tab}
-          onPress={() => navigation.navigate('SpCarRent')}
+          //   onPress={() => navigation.navigate('SpCarRent')}
         >
           <Block row middle>
             <Text size={14} style={styles.tabTitle}>
@@ -291,7 +291,6 @@ class Header extends React.Component {
   };
   //-------------
 
- 
   renderTabs = () => {
     const { tabs, tabIndex, navigation } = this.props;
     const defaultTab = tabs && tabs[0] && tabs[0].id;
@@ -302,9 +301,7 @@ class Header extends React.Component {
       <Tabs
         data={tabs || []}
         initialIndex={tabIndex || defaultTab}
-        onChange={
-          ((id) => navigation.setParams({ tabId: id }))
-        }
+        onChange={(id) => navigation.setParams({ tabId: id })}
       />
     );
   };

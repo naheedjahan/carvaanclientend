@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -6,64 +6,60 @@ import {
   Image,
   ImageBackground,
   Platform,
-  AsyncStorage
-} from "react-native";
-import { Block, Text, theme } from "galio-framework";
-import { Button, Select, Icon, Input, Header, Switch } from '../components/';
+  AsyncStorage,
+} from 'react-native';
+import { Block, Text, theme } from 'galio-framework';
+import { Button, Select, Icon, Input, Header, Switch } from '../components';
 //import { Button } from "../components";
-import MapView from "react-native-maps";
-import openMap from "react-native-open-maps";
-import { Images, argonTheme } from "../constants";
-import { HeaderHeight } from "../constants/utils";
+import MapView from 'react-native-maps';
+import openMap from 'react-native-open-maps';
+import { Images, argonTheme } from '../constants';
+import { HeaderHeight } from '../constants/utils';
 import { Card, Rating } from 'react-native-elements';
-const { width, height } = Dimensions.get("screen");
+const { width, height } = Dimensions.get('screen');
 
 const thumbMeasure = (width - 48 - 32) / 3;
 
 class CCInput extends React.Component {
-  
   constructor(props) {
     super(props);
     this.state = {
-      region:null,
-      timing:''
-      
+      region: null,
+      timing: '',
     };
-  
-}
+  }
   async componentWillMount() {
     // Asking for device location permission
-    const open=this.props.route.params.item;
-    let n = open.includes("opening_hours");
-   if (n){
-    this.setState({timing:this.props.route.params.item.opening_hours.open_now})
-   }
-   else{
-    this.setState({timing:'Not Mentioned'})
-   }
-   const location =this.props.route.params.item.geometry.location;
-   let region = {
-    latitude: location.lat,
-    longitude: location.lng,
-    latitudeDelta: 0.045,
-    longitudeDelta: 0.045
-  };
-  this.setState({ region: region });
+    const open = this.props.route.params.item;
+    let n = open.includes('opening_hours');
+    if (n) {
+      this.setState({
+        timing: this.props.route.params.item.opening_hours.open_now,
+      });
+    } else {
+      this.setState({ timing: 'Not Mentioned' });
+    }
+    const location = this.props.route.params.item.geometry.location;
+    let region = {
+      latitude: location.lat,
+      longitude: location.lng,
+      latitudeDelta: 0.045,
+      longitudeDelta: 0.045,
+    };
+    this.setState({ region: region });
   }
   render() {
     //const item = this.props.route.params;
-    const item =this.props.route.params.item.name;
-    const item2 =this.props.route.params.item.vicinity;
-    const bs =this.props.route.params.item.business_status;
-    const location =this.props.route.params.item.geometry.location;
+    const item = this.props.route.params.item.name;
+    const item2 = this.props.route.params.item.vicinity;
+    const bs = this.props.route.params.item.business_status;
+    const location = this.props.route.params.item.geometry.location;
     //const open=this.props.route.params.item.opening_hours.open_now;
-    const rating =this.props.route.params.item.user_ratings_total;
+    const rating = this.props.route.params.item.user_ratings_total;
     //const check =this.props.route.params.item.plus_code.compound_code;
     //const item = this.props.navigation.getParam('item');
-  
-   
-   
-    console.log('here'+ this.state.timing);
+
+    console.log('here' + this.state.timing);
     const openAppMap = () => {
       openMap({
         latitude: location.lat,
@@ -73,24 +69,21 @@ class CCInput extends React.Component {
     };
 
     return (
-     
       <Block flex style={styles.profile}>
-        
-        <Block flex >
+        <Block flex>
           <ImageBackground
             source={Images.ProfileBackground}
             style={styles.profileContainer}
             imageStyle={styles.profileBackground}
           >
-              <Block style={{ marginBottom: theme.SIZES.BASE }}>
-            <Header
-               transparent
-               white
-               title="Profile"
-               navigation={this.props.navigation}
-             
-            />
-          </Block>
+            <Block style={{ marginBottom: theme.SIZES.BASE }}>
+              <Header
+                transparent
+                white
+                title='Profile'
+                navigation={this.props.navigation}
+              />
+            </Block>
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={{ width, marginTop: '5%' }}
@@ -98,20 +91,23 @@ class CCInput extends React.Component {
               <Block flex style={styles.profileCard}>
                 <Block middle style={styles.avatarContainer}>
                   <Image
-                    source={{ uri: 'https://image.flaticon.com/icons/png/512/1516/1516386.png'}}
+                    source={{
+                      uri:
+                        'https://image.flaticon.com/icons/png/512/1516/1516386.png',
+                    }}
                     style={styles.avatar}
                   />
                 </Block>
                 <Block style={styles.info}>
-                  
-                  <Block row space="between">
+                  <Block row space='between'>
                     <Block middle>
-                   
-                      <Text size={12} color={argonTheme.COLORS.TEXT}>Timings</Text>
+                      <Text size={12} color={argonTheme.COLORS.TEXT}>
+                        Timings
+                      </Text>
                       <Text
                         bold
                         size={18}
-                        color="#525F7F"
+                        color='#525F7F'
                         style={{ marginBottom: 4 }}
                       >
                         {this.state.timing ? 'Open' : 'Closed'}
@@ -129,24 +125,25 @@ class CCInput extends React.Component {
                       <Text size={12} color={argonTheme.COLORS.TEXT}>Photos</Text>
                     </Block> */}
                     <Block middle>
-                    <Text size={12} color={argonTheme.COLORS.TEXT}>Customer Rating</Text>
-                    <Rating
-              type='star'
-              imageSize={15}
-              readonly
-              style={{ paddingRight: 10, marginTop:7 }}
-              startingValue={rating}
-            />
-                    
+                      <Text size={12} color={argonTheme.COLORS.TEXT}>
+                        Customer Rating
+                      </Text>
+                      <Rating
+                        type='star'
+                        imageSize={15}
+                        readonly
+                        style={{ paddingRight: 10, marginTop: 7 }}
+                        startingValue={rating}
+                      />
                     </Block>
                   </Block>
                 </Block>
                 <Block flex>
                   <Block middle style={styles.nameInfo}>
-                    <Text bold size={28} color="#32325D">
+                    <Text bold size={28} color='#32325D'>
                       {item}
                     </Text>
-                    <Text size={16} color="green" style={{ marginTop: 10 }}>
+                    <Text size={16} color='green' style={{ marginTop: 10 }}>
                       {bs}
                     </Text>
                   </Block>
@@ -156,17 +153,16 @@ class CCInput extends React.Component {
                   <Block middle>
                     <Text
                       size={16}
-                      color="#525F7F"
-                      style={{ textAlign: "center" }}
+                      color='#525F7F'
+                      style={{ textAlign: 'center' }}
                       selectable
                     >
                       {item2}
                     </Text>
-                   
                   </Block>
-                
-                <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
-                  {/* <Block row space="between" style={{ flexWrap: "wrap" }}>
+
+                  <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
+                    {/* <Block row space="between" style={{ flexWrap: "wrap" }}>
                     {Photos.map((img, imgIndex) => (
                       <Image
                         source={{ uri: img }}
@@ -176,19 +172,19 @@ class CCInput extends React.Component {
                       />
                     ))}
                   </Block> */}
-                   <MapView
-      style={{ height: height/2, width: "100%" }}
-      initialRegion={location.lat}
-      onPress={openAppMap}
-    >
-      <MapView.Marker
-        coordinate={{
-          latitude: location.lat,
-          longitude: location.lng,
-        }}
-      />
-    </MapView>
-                </Block> 
+                    <MapView
+                      style={{ height: height / 2, width: '100%' }}
+                      initialRegion={location.lat}
+                      onPress={openAppMap}
+                    >
+                      <MapView.Marker
+                        coordinate={{
+                          latitude: location.lat,
+                          longitude: location.lng,
+                        }}
+                      />
+                    </MapView>
+                  </Block>
                 </Block>
               </Block>
             </ScrollView>
@@ -317,20 +313,20 @@ class CCInput extends React.Component {
 
 const styles = StyleSheet.create({
   profile: {
-    marginTop: Platform.OS === "android" ? -HeaderHeight :0,
-  // marginBottom: -HeaderHeight * 2,
-    flex: 1
+    marginTop: Platform.OS === 'android' ? -HeaderHeight : 0,
+    // marginBottom: -HeaderHeight * 2,
+    flex: 1,
   },
   profileContainer: {
     width: width,
     height: height,
     padding: 0,
     zIndex: 1,
-  //  marginTop:100,
+    //  marginTop:100,
   },
   profileBackground: {
     width: width,
-    height: height / 2
+    height: height / 2,
   },
   profileCard: {
     // position: "relative",
@@ -340,40 +336,40 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 6,
     borderTopRightRadius: 6,
     backgroundColor: theme.COLORS.WHITE,
-    shadowColor: "black",
+    shadowColor: 'black',
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
     shadowOpacity: 0.2,
-    zIndex: 2
+    zIndex: 2,
   },
   info: {
-    paddingHorizontal: 40
+    paddingHorizontal: 40,
   },
   avatarContainer: {
-    position: "relative",
-    marginTop: -80
+    position: 'relative',
+    marginTop: -80,
   },
   avatar: {
     width: 180,
     height: 180,
     borderRadius: 62,
-    borderWidth: 0
+    borderWidth: 0,
   },
   nameInfo: {
-    marginTop: 35
+    marginTop: 35,
   },
   divider: {
-    width: "90%",
+    width: '90%',
     borderWidth: 1,
-    borderColor: "#E9ECEF"
+    borderColor: '#E9ECEF',
   },
   thumb: {
     borderRadius: 4,
     marginVertical: 4,
-    alignSelf: "center",
+    alignSelf: 'center',
     width: thumbMeasure,
-    height: thumbMeasure
-  }
+    height: thumbMeasure,
+  },
 });
 
 export default CCInput;

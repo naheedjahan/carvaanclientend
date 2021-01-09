@@ -11,78 +11,76 @@ import Tabs from '../components/Tabs';
 // screens
 import Home from '../screens/Home';
 import Onboarding from '../screens/Onboarding';
-import BookingStatistics from '../screens/BooingStatistics';
+import BookingStatistics from '../screens/BookingStatistics';
 import Profile from '../screens/Profile';
-
+import UpdateProfile from '../screens/UpdateProfile';
+import HireDT from '../screens/HireDT';
 import Elements from '../screens/Elements';
 import Articles from '../screens/Articles';
-
-import Wdriver from '../screens/Wdriver';
-
-import UpdateProfile from '../screens/UpdateProfile';
-
-import RentACar from '../screens/RentACar';
-import RentBooking from '../screens/RentBooking';
-import TouristBooking from '../screens/TouristBooking';
-import popUp from '../screens/popUp';
-import HireDT from '../screens/HireDT';
-import HireDriver from '../screens/HireDriver';
-import HireTouristGuide from '../screens/HireTouristGuide';
-import HireBothDT from '../screens/HireBothDT';
-import SpProfile from '../screens/SpProfile';
 import AboutUs from '../screens/AboutUs';
 import ContactUs from '../screens/ContactUs';
+import HireBothDT from '../screens/HireBothDT';
+import SpProfile from '../screens/SpProfile';
 import SpCarRent from '../screens/SpCarRent';
 import Reviews from '../screens/Reviews';
-import PlanATrip from '../screens/PlanATrip';
-import TouristPoints from '../screens/TouristPoints';
 import RegisterDT from '../screens/RegisterDT';
 import SignOut from '../screens/SignOut';
-import EndVehicleBooking from '../screens/EndVehicleBooking';
-import EndTouristBooking from '../screens/EndTouristBooking';
-import CarDetails from '../screens/CarDetails';
-//------------Resturants Screen
-// import Resturants from '../screens/Restaurants/Restaurants';
-// import Resturant from '../screens/Restaurants/Restaurant';
 
-//card screens
-import CardView from '../src/CardView';
-import CCFieldFormatter from '../src/CCFieldFormatter';
+//====Car Rental screens
+import Wdriver from '../screens/Wdriver';
+import popUp from '../screens/popUp';
+import EndVehicleBooking from '../screens/EndVehicleBooking';
+import RentACar from '../screens/RentACar';
+import RentBooking from '../screens/RentBooking';
+import CarDetails from '../screens/CarDetails';
 import CCFieldValidator from '../src/CCFieldValidator';
+
+//======Tourist Guide Screens
+import TouristBooking from '../screens/TouristGuide/TouristBooking';
+import HireTouristGuide from '../screens/TouristGuide/HireTouristGuide';
+import EndTouristBooking from '../screens/TouristGuide/EndTouristBooking';
+
+//===== Trip screens
+import PlanATrip from '../screens/PlanATrip';
+import TouristPoints from '../screens/TouristPoints';
 import CCInput from '../src/CCInput';
-import connectToState from '../src/connectToState';
+
+//======Drivers Screen
+import HireDriver from '../screens/Driver/HireDriver';
+import driverDetails from '../screens/Driver/driverDetails';
+import Request from '../screens/Driver/Request';
+import DriverBooking from '../screens/Driver/DriverBooking';
+import DriverBookingStatistics from '../screens/Driver/BookingStatistics';
+import EndDriverBooking from '../screens/Driver/EndDriverBooking';
+import FullPayment from '../src/FullPayment';
+//======Payment Screens
 import CreditCardInput from '../src/CreditCardInput';
-import LiteCreditCardInput from '../src/LiteCreditCardInput';
+
 // drawer
 import CustomDrawerContent from './Menu'; //importing from menu ???
 
 // header for screens
 import { Icon, Header } from '../components';
 import { argonTheme, tabs } from '../constants';
-
-// add a stack screen here for spdashboard
 const { width } = Dimensions.get('screen');
 
+//====== Navigation Navigator
 const Stack = createStackNavigator(); // create means assign names to screens here
 const Drawer = createDrawerNavigator();
 //const Tab = createBottomTabNavigator();
 const Tab = createMaterialTopTabNavigator();
 //----
-//======
 
 //========
 function ElementsStack(props) {
-  
   return (
     <Stack.Navigator mode='card' headerMode='screen'>
       <Stack.Screen
-        name='Rate Our App'
-        component={Elements}
+        name='CCFieldValidator'
+        component={CCFieldValidator}
         options={{
-          header: ({ navigation, scene }) => (
-            <Header title='Elements' navigation={navigation} scene={scene} />
-          ),
-          cardStyle: { backgroundColor: '#F8F9FE' },
+          cardStyle: { backgroundColor: '#FFFFFF' },
+          headerTransparent: true,
         }}
       />
     </Stack.Navigator>
@@ -116,7 +114,6 @@ function ReviewStack(props) {
           headerTransparent: true,
         }}
       />
-      
     </Stack.Navigator>
   );
 }
@@ -130,16 +127,8 @@ function LogOutStack(props) {
 
 function ProfileStack(props) {
   return (
-    <Stack.Navigator initialRouteName="Profile" mode="card" headerMode="screen">
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-         
-        }}
-      />
-          
-      
+    <Stack.Navigator initialRouteName='Profile' mode='card' headerMode='screen'>
+      <Stack.Screen name='Profile' component={Profile} options={{}} />
     </Stack.Navigator>
   );
 }
@@ -166,116 +155,16 @@ function HomeStack(props) {
         name='RentACar' // experiment kiya tha successful ho gya tha login likh k
         component={RentalStack}
         options={{
-      headerShown:false
+          headerShown: false,
         }}
       />
-     
+
       <Stack.Screen
         name='HireDT' // experiment kiya tha successful ho gya tha login likh k
-        component={HireDT}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
+        component={DTStack}
+        options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name='HireDriver' // experiment kiya tha successful ho gya tha login likh k
-        component={HireDriver}
-      />
-      <Stack.Screen
-        name='HireTouristGuide' // experiment kiya tha successful ho gya tha login likh k
-        component={HireTouristGuide}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
-        name='TouristBooking' // experiment kiya tha successful ho gya tha login likh k
-        component={TouristBooking}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
-        name='EndTouristBooking' // experiment kiya tha successful ho gya tha login likh k
-        component={EndTouristBooking}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
-        name='HireBothDT' // experiment kiya tha successful ho gya tha login likh k
-        component={HireBothDT}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
-        name='SpProfile' // experiment kiya tha successful ho gya tha login likh k
-        component={SpProfile}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
-      />
+
       <Stack.Screen
         name='About Us' // sxperiment kiya tha successful ho gya tha login likh k
         component={AboutUs}
@@ -312,79 +201,10 @@ function HomeStack(props) {
       />
 
       <Stack.Screen
-        name='SpCarRent'
-        component={SpCarRent}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title='Home'
-              search
-              check
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          cardStyle: { backgroundColor: '#F8F9FE' },
-        }}
-      />
-      <Stack.Screen
-        name='Reviews'
-        component={Reviews}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title='Title'
-              // search
-              //check
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          cardStyle: { backgroundColor: '#F8F9FE' },
-        }}
-      />
-
-      <Stack.Screen
         name='TripStack' // experiment kiya tha successful ho gya tha login likh k
         component={TripStack}
         options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
-      />
-      {/* <Stack.Screen
-        name='CreditCardInput' // experiment kiya tha successful ho gya tha login likh k
-        component={CreditCardInput}
-        
-      /> */}
-     
-      {/* <Stack.Screen
-        name='Articles'
-        component={Articles}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header title='Articles' navigation={navigation} scene={scene} />
-          ),
-          cardStyle: { backgroundColor: '#F8F9FE' },
-        }}
-      /> */}
-      <Stack.Screen
-        name='RegisterDT'
-        component={RegisterDT}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header title='Home' search navigation={navigation} scene={scene} />
-          ),
-          cardStyle: { backgroundColor: '#F8F9FE' },
+          headerShown: false,
         }}
       />
     </Stack.Navigator>
@@ -393,10 +213,34 @@ function HomeStack(props) {
 function DTStack(props) {
   return (
     <Stack.Navigator mode='card' headerMode='screen'>
-
       <Stack.Screen
         name='HireDT' // experiment kiya tha successful ho gya tha login likh k
         component={HireDT}
+      />
+      <Stack.Screen
+        name='HireDriver' // experiment kiya tha successful ho gya tha login likh k
+        component={DriverStack}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name='HireTouristGuide' // experiment kiya tha successful ho gya tha login likh k
+        component={TouristGuideStack}
+      />
+    </Stack.Navigator>
+  );
+}
+function DriverStack(props) {
+  return (
+    <Stack.Navigator mode='card' headerMode='screen'>
+      <Stack.Screen
+        name='HireDriver' // experiment kiya tha successful ho gya tha login likh k
+        component={HireDriver}
+      />
+      <Stack.Screen
+        name='driverDetails' // experiment kiya tha successful ho gya tha login likh k
+        component={driverDetails}
         options={{
           header: ({ navigation, scene }) => (
             <Header
@@ -412,9 +256,137 @@ function DTStack(props) {
         }}
       />
       <Stack.Screen
-        name='HireDriver' // experiment kiya tha successful ho gya tha login likh k
-        component={HireDriver}
+        name='DriverBooking' // experiment kiya tha successful ho gya tha login likh k
+        component={DriverBooking}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              white
+              //back
+              title='Title'
+              navigation={navigation}
+              bgColor={argonTheme.COLORS.ACTIVE}
+              titleColor='white'
+              iconColor='white'
+            />
+          ),
+          headerTransparent: true,
+        }}
       />
+      <Stack.Screen
+        name='DriverBookingStatistics' // experiment kiya tha successful ho gya tha login likh k
+        component={DriverBookingStatistics}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              white
+              //back
+              title='Title'
+              navigation={navigation}
+              bgColor={argonTheme.COLORS.ACTIVE}
+              titleColor='white'
+              iconColor='white'
+            />
+          ),
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name='Request' // experiment kiya tha successful ho gya tha login likh k
+        component={Request}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              white
+              //back
+              title='Title'
+              navigation={navigation}
+              bgColor={argonTheme.COLORS.ACTIVE}
+              titleColor='white'
+              iconColor='white'
+            />
+          ),
+          headerTransparent: true,
+        }}
+      />
+
+      <Stack.Screen
+        name='CreditCardInput'
+        component={CreditCardInput}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              white
+              //back
+              title='Title'
+              navigation={navigation}
+              bgColor={argonTheme.COLORS.ACTIVE}
+              titleColor='white'
+              iconColor='white'
+            />
+          ),
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name='EndDriverBooking'
+        component={EndDriverBooking}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              white
+              //back
+              title='Title'
+              navigation={navigation}
+              bgColor={argonTheme.COLORS.ACTIVE}
+              titleColor='white'
+              iconColor='white'
+            />
+          ),
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name='FullPayment'
+        component={FullPayment}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              white
+              //back
+              title='Title'
+              navigation={navigation}
+              bgColor={argonTheme.COLORS.ACTIVE}
+              titleColor='white'
+              iconColor='white'
+            />
+          ),
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name='SpProfile' // experiment kiya tha successful ho gya tha login likh k
+        component={SpProfile}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title=''
+              back
+              white
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          headerTransparent: true,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+function TouristGuideStack(props) {
+  return (
+    <Stack.Navigator mode='card' headerMode='screen'>
       <Stack.Screen
         name='HireTouristGuide' // experiment kiya tha successful ho gya tha login likh k
         component={HireTouristGuide}
@@ -466,23 +438,7 @@ function DTStack(props) {
           headerTransparent: true,
         }}
       />
-      <Stack.Screen
-        name='HireBothDT' // experiment kiya tha successful ho gya tha login likh k
-        component={HireBothDT}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
-      />
+
       <Stack.Screen
         name='SpProfile' // experiment kiya tha successful ho gya tha login likh k
         component={SpProfile}
@@ -500,112 +456,27 @@ function DTStack(props) {
           headerTransparent: true,
         }}
       />
-      
-
-      <Stack.Screen
-        name='SpCarRent'
-        component={SpCarRent}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title='Home'
-              search
-              check
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          cardStyle: { backgroundColor: '#F8F9FE' },
-        }}
-      />
-      <Stack.Screen
-        name='Reviews'
-        component={Reviews}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title='Title'
-              // search
-              //check
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          cardStyle: { backgroundColor: '#F8F9FE' },
-        }}
-      />
-
-      <Stack.Screen
-        name='TripStack' // experiment kiya tha successful ho gya tha login likh k
-        component={TripStack}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
-      />
-      {/* <Stack.Screen
-        name='CreditCardInput' // experiment kiya tha successful ho gya tha login likh k
-        component={CreditCardInput}
-        
-      /> */}
-     
-      {/* <Stack.Screen
-        name='Articles'
-        component={Articles}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header title='Articles' navigation={navigation} scene={scene} />
-          ),
-          cardStyle: { backgroundColor: '#F8F9FE' },
-        }}
-      /> */}
-      <Stack.Screen
-        name='RegisterDT'
-        component={RegisterDT}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header title='Home' search navigation={navigation} scene={scene} />
-          ),
-          cardStyle: { backgroundColor: '#F8F9FE' },
-        }}
-      />
     </Stack.Navigator>
   );
 }
 function RentalStack(props) {
   return (
     <Stack.Navigator mode='card' headerMode='screen'>
-      
       <Stack.Screen
         name='RentACar' // experiment kiya tha successful ho gya tha login likh k
         component={RentACar}
-        options={{
-      
-        }}
+        options={{}}
       />
       <Stack.Screen
         name='Wdriver' // experiment kiya tha successful ho gya tha login likh k
         component={Wdriver}
-        options={{
-          
-        }}
+        options={{}}
       />
 
-<Stack.Screen
+      <Stack.Screen
         name='CarDetails' // experiment kiya tha successful ho gya tha login likh k
         component={CarDetails}
-        options={{
-          
-        }}
+        options={{}}
       />
       <Stack.Screen
         name='RentBooking' // experiment kiya tha successful ho gya tha login likh k
@@ -643,7 +514,7 @@ function RentalStack(props) {
           headerTransparent: true,
         }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name='popUp' // experiment kiya tha successful ho gya tha login likh k
         component={popUp}
         options={{
@@ -651,7 +522,7 @@ function RentalStack(props) {
             <Header
               white
               //back
-              title='Title'
+              title='Request Status'
               navigation={navigation}
               bgColor={argonTheme.COLORS.ACTIVE}
               titleColor='white'
@@ -661,15 +532,8 @@ function RentalStack(props) {
           headerTransparent: true,
         }}
       />
-       <Stack.Screen
-        name='CCFieldValidator'
-        component={CCFieldValidator}
-        options={{
-          cardStyle: { backgroundColor: '#FFFFFF' },
-          headerTransparent: true,
-        }}
-      />
-       <Stack.Screen
+
+      <Stack.Screen
         name='CreditCardInput'
         component={CreditCardInput}
         options={{
@@ -704,8 +568,24 @@ function RentalStack(props) {
           headerTransparent: true,
         }}
       />
-    
-     
+      <Stack.Screen
+        name='FullPayment'
+        component={FullPayment}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              white
+              //back
+              title='Title'
+              navigation={navigation}
+              bgColor={argonTheme.COLORS.ACTIVE}
+              titleColor='white'
+              iconColor='white'
+            />
+          ),
+          headerTransparent: true,
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -716,26 +596,11 @@ function TripStack(props) {
       <Stack.Screen
         name='PlanATrip' // experiment kiya tha successful ho gya tha login likh k
         component={PlanATrip}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=''
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
-          headerTransparent: true,
-        }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name='TouristPoints'
         component={TouristPoints}
-        options={{
-         
-        }}
+        options={{}}
       />
       <Stack.Screen
         name='CCInput'
@@ -745,8 +610,6 @@ function TripStack(props) {
           headerTransparent: true,
         }}
       />
-      
-       
     </Stack.Navigator>
   );
 }
@@ -809,16 +672,9 @@ function AppStack(props) {
       <Drawer.Screen name='Home' component={HomeStack} />
       <Drawer.Screen name='Profile' component={ProfileStack} />
       <Drawer.Screen name='Review' component={ReviewStack} />
-      <Drawer.Screen name='Rate Our App' component={ElementsStack} />
+      <Drawer.Screen name='Location' component={ElementsStack} />
       <Drawer.Screen name='Settings' component={SettingStack} />
       <Drawer.Screen name='Log Out' component={LogOutStack} />
     </Drawer.Navigator>
-  );
-}
-function MyTabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name='Home' component={ServiceProviderStack} />
-    </Tab.Navigator>
   );
 }
